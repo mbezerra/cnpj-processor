@@ -11,15 +11,18 @@ cnpj-processor/
 │   ├── filters/                 # Módulo de filtros
 │   └── config/                  # Módulo de configuração
 ├── scripts/                     # Scripts executáveis
-│   ├── main.py                 # Script principal
-│   └── test_connection.py      # Teste de conexão
+│   └── main.py                 # Script principal
+├── tests/                       # Testes automatizados
+│   ├── test_connection.py      # Teste de conexão
+│   └── test_exemplo_basico.py  # Teste com filtros
 ├── docs/                       # Documentação
 ├── examples/                   # Exemplos e templates
-├── .vscode/                    # Configurações do VS Code
-├── data/                       # Dados de entrada
+├── data/                       # Scripts de banco de dados
+│   └── ddls.sql               # Scripts para criar tabelas
 ├── output/                     # Dados de saída (gerado automaticamente)
 ├── requirements.txt           # Dependências Python
 ├── pyproject.toml            # Configuração do projeto
+├── config.example.env        # Exemplo de configuração
 ├── Makefile                  # Comandos de desenvolvimento
 ├── CHANGELOG.md             # Histórico de mudanças
 ├── cnpj-processor.code-workspace  # Workspace do VS Code
@@ -39,12 +42,30 @@ cnpj-processor/
 pip install -r requirements.txt
 ```
 
-2. **Testar conexão:**
+2. **Configurar banco de dados:**
 ```bash
-python scripts/test_connection.py
+# 1. Criar o banco de dados MySQL
+mysql -u root -p -e "CREATE DATABASE cnpj;"
+
+# 2. Importar as tabelas usando os scripts DDL
+mysql -u root -p cnpj < data/ddls.sql
 ```
 
-3. **Usar comandos Make (recomendado):**
+3. **Configurar variáveis de ambiente:**
+```bash
+# Copiar arquivo de exemplo
+cp config.example.env .env
+
+# Editar com suas configurações
+nano .env
+```
+
+4. **Testar conexão:**
+```bash
+python tests/test_connection.py
+```
+
+5. **Usar comandos Make (recomendado):**
 ```bash
 make help              # Mostra todos os comandos
 make setup             # Configura o ambiente
@@ -52,11 +73,7 @@ make test-connection    # Testa a conexão
 make run-dev           # Executa em desenvolvimento
 ```
 
-4. **Configurar banco de dados:**
-   - As tabelas já existem no MySQL
-   - Configurações de conexão em `src/config/config.py`
-
-5. **Abrir no VS Code:**
+6. **Abrir no VS Code:**
    ```bash
    # Opção 1: Abrir pasta diretamente
    code .
@@ -196,15 +213,27 @@ O CSV gerado contém as seguintes colunas principais:
 ## Configurações Avançadas
 
 ### 🔧 Configurações do Banco
+As configurações do banco são carregadas via variáveis de ambiente do arquivo `.env`:
+
 ```python
 DATABASE_CONFIG = {
-    'host': 'localhost',
-    'port': 3306,
-    'user': 'prospectar',
-    'password': 'Mova1520#',
-    'database': 'cnpj',
-    'charset': 'utf8mb4'
+    'host': os.getenv('DB_HOST', 'localhost'),
+    'port': int(os.getenv('DB_PORT', 3306)),
+    'user': os.getenv('DB_USER', 'root'),
+    'password': os.getenv('DB_PASSWORD', ''),
+    'database': os.getenv('DB_NAME', 'cnpj'),
+    'charset': os.getenv('DB_CHARSET', 'utf8mb4')
 }
+```
+
+**Arquivo `.env` de exemplo:**
+```env
+DB_HOST=localhost
+DB_PORT=3306
+DB_USER=seu_usuario
+DB_PASSWORD=sua_senha
+DB_NAME=cnpj
+DB_CHARSET=utf8mb4
 ```
 
 ### 📈 Controle de Performance
