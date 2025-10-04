@@ -18,7 +18,11 @@ cnpj-processor/
 │       ├── __init__.py
 │       └── config.py
 ├── scripts/                     # Scripts executáveis
-│   └── main.py                 # Script principal
+│   ├── main.py                 # Script principal de processamento
+│   ├── cnpj_empresas.py       # Carregamento de dados das empresas
+│   ├── cnpj_estabelecimentos.py # Carregamento de dados dos estabelecimentos
+│   ├── cnpj_socios.py         # Carregamento de dados dos sócios
+│   └── cnpj_simples.py        # Carregamento de dados do Simples Nacional
 ├── tests/                       # Testes automatizados
 │   ├── test_connection.py      # Teste de conexão com banco
 │   └── test_exemplo_basico.py  # Teste com filtros e geração de CSV
@@ -125,13 +129,22 @@ O sistema utiliza um banco MySQL com as seguintes tabelas principais:
    mysql -u root -p cnpj < data/insert-cnpj-motivos.sql
    ```
 
-4. **Configurar variáveis:**
+4. **Carregar dados das empresas (opcional):**
+   ```bash
+   # Apenas se você tiver os arquivos CSV originais da Receita Federal
+   python scripts/cnpj_empresas.py
+   python scripts/cnpj_estabelecimentos.py
+   python scripts/cnpj_socios.py
+   python scripts/cnpj_simples.py
+   ```
+
+5. **Configurar variáveis:**
    ```bash
    cp config.example.env .env
    # Editar .env com suas credenciais
    ```
 
-5. **Testar instalação:**
+6. **Testar instalação:**
    ```bash
    python tests/test_connection.py
    python tests/test_exemplo_basico.py

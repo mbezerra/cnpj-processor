@@ -60,7 +60,27 @@ mysql -u root -p cnpj < data/insert-cnpj-qualificacao-socios.sql
 mysql -u root -p cnpj < data/insert-cnpj-motivos.sql
 ```
 
-### 4. Verificar a Instalação
+### 4. Carregar Dados das Empresas (Opcional)
+
+**Importante:** Este passo é opcional e só deve ser executado se você tiver os arquivos CSV originais da Receita Federal.
+
+```bash
+# Carregar dados das empresas
+python scripts/cnpj_empresas.py
+
+# Carregar dados dos estabelecimentos
+python scripts/cnpj_estabelecimentos.py
+
+# Carregar dados dos sócios
+python scripts/cnpj_socios.py
+
+# Carregar dados do Simples Nacional
+python scripts/cnpj_simples.py
+```
+
+**Nota:** Os scripts esperam os arquivos CSV no formato original da Receita Federal com os nomes específicos (ex: `K3241.K03200Y.D50913.EMPRECSV`).
+
+### 5. Verificar a Instalação
 
 ```bash
 # Conectar ao banco e verificar as tabelas
@@ -103,13 +123,22 @@ mysql -u root -p cnpj -e "SELECT COUNT(*) as total_paises FROM cnpj_paises;"
 2. **Formatos disponíveis**: CSV, TXT
 3. **Processamento**: Use ferramentas específicas para importar os dados
 
-### Estrutura dos arquivos de dados:
+### Scripts de carregamento disponíveis:
 
 ```
-dados_empresas.sql          # Dados da tabela cnpj_empresas
-dados_estabelecimentos.sql  # Dados da tabela cnpj_estabelecimentos  
-dados_socios.sql           # Dados da tabela cnpj_socios
-dados_simples.sql          # Dados da tabela cnpj_simples
+scripts/cnpj_empresas.py       # Carrega dados da tabela cnpj_empresas
+scripts/cnpj_estabelecimentos.py # Carrega dados da tabela cnpj_estabelecimentos  
+scripts/cnpj_socios.py         # Carrega dados da tabela cnpj_socios
+scripts/cnpj_simples.py        # Carrega dados da tabela cnpj_simples
+```
+
+### Arquivos CSV esperados pelos scripts:
+
+```
+K3241.K03200Y.D50913.EMPRECSV    # Dados das empresas
+K3241.K03200Y.D50913.ESTABELE    # Dados dos estabelecimentos
+K3241.K03200Y.D50913.SOCIOCSV    # Dados dos sócios
+K3241.K03200Y.D50913.SIMPLES     # Dados do Simples Nacional
 ```
 
 ## 🔧 Configuração de Usuário

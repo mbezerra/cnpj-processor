@@ -11,7 +11,11 @@ cnpj-processor/
 │   ├── filters/                 # Módulo de filtros
 │   └── config/                  # Módulo de configuração
 ├── scripts/                     # Scripts executáveis
-│   └── main.py                 # Script principal
+│   ├── main.py                 # Script principal de processamento
+│   ├── cnpj_empresas.py       # Carregamento de dados das empresas
+│   ├── cnpj_estabelecimentos.py # Carregamento de dados dos estabelecimentos
+│   ├── cnpj_socios.py         # Carregamento de dados dos sócios
+│   └── cnpj_simples.py        # Carregamento de dados do Simples Nacional
 ├── tests/                       # Testes automatizados
 │   ├── test_connection.py      # Teste de conexão
 │   └── test_exemplo_basico.py  # Teste com filtros
@@ -70,10 +74,11 @@ pip install -r requirements.txt
    mysql -u root -p cnpj < data/insert-cnpj-qualificacao-socios.sql
    mysql -u root -p cnpj < data/insert-cnpj-motivos.sql
 
-   # 4. Importar dados das empresas (opcional - apenas se você tiver os dados)
-   # mysql -u root -p cnpj < dados_empresas.sql
-   # mysql -u root -p cnpj < dados_estabelecimentos.sql
-   # mysql -u root -p cnpj < dados_socios.sql
+# 4. Carregar dados das empresas (opcional - apenas se você tiver os arquivos CSV da Receita Federal)
+# python scripts/cnpj_empresas.py
+# python scripts/cnpj_estabelecimentos.py
+# python scripts/cnpj_socios.py
+# python scripts/cnpj_simples.py
    ```
 
 3. **Configurar variáveis de ambiente:**
@@ -291,15 +296,25 @@ mysql -u root -p cnpj < data/insert-cnpj-qualificacao-socios.sql
 mysql -u root -p cnpj < data/insert-cnpj-motivos.sql
 ```
 
-#### **4. Importar Dados das Empresas (Opcional)**
+#### **4. Carregar Dados das Empresas (Opcional)**
 ```bash
-# Apenas se você tiver os dados das empresas CNPJ
+# Apenas se você tiver os arquivos CSV originais da Receita Federal
 # Estes arquivos não estão incluídos no repositório
-mysql -u root -p cnpj < dados_empresas.sql
-mysql -u root -p cnpj < dados_estabelecimentos.sql
-mysql -u root -p cnpj < dados_socios.sql
-mysql -u root -p cnpj < dados_simples.sql
+
+# Carregar dados das empresas
+python scripts/cnpj_empresas.py
+
+# Carregar dados dos estabelecimentos  
+python scripts/cnpj_estabelecimentos.py
+
+# Carregar dados dos sócios
+python scripts/cnpj_socios.py
+
+# Carregar dados do Simples Nacional
+python scripts/cnpj_simples.py
 ```
+
+**Nota:** Os scripts esperam os arquivos CSV no formato original da Receita Federal com os nomes específicos (ex: `K3241.K03200Y.D50913.EMPRECSV`).
 
 ### **Verificação da Instalação**
 
@@ -315,8 +330,9 @@ python tests/test_exemplo_basico.py
 
 ### **Notas Importantes**
 
-- ⚠️ **Dados das empresas**: Os dados reais das empresas (tabelas `cnpj_empresas`, `cnpj_estabelecimentos`, `cnpj_socios`) não estão incluídos no repositório por questões de tamanho e licenciamento
+- ⚠️ **Dados das empresas**: Os arquivos CSV originais da Receita Federal não estão incluídos no repositório por questões de tamanho e licenciamento
 - ✅ **Tabelas de referência**: Todas as tabelas de referência estão incluídas e são essenciais para o funcionamento
+- 🔧 **Scripts de carregamento**: Os scripts na pasta `scripts/` processam os arquivos CSV originais e carregam no banco
 - 🔧 **Encoding**: O banco deve usar `utf8mb4` para suportar caracteres especiais
 - 📊 **Tamanho**: As tabelas de referência ocupam aproximadamente 600KB total
 
