@@ -16,9 +16,18 @@ cnpj-processor/
 │   ├── test_connection.py      # Teste de conexão
 │   └── test_exemplo_basico.py  # Teste com filtros
 ├── docs/                       # Documentação
+│   ├── ESTRUTURA.md          # Estrutura do projeto
+│   ├── INSTALACAO_BANCO.md   # Guia de instalação do banco
+│   └── relacionamentos_tabelas.md # Relacionamentos das tabelas
 ├── examples/                   # Exemplos e templates
 ├── data/                       # Scripts de banco de dados
-│   └── ddls.sql               # Scripts para criar tabelas
+│   ├── ddls.sql              # Estrutura das tabelas (CREATE TABLE)
+│   ├── insert-cnpj-cnaes.sql # Dados de CNAEs
+│   ├── insert-cnpj-paises.sql # Dados de países
+│   ├── insert-cnpj-municipios.sql # Dados de municípios
+│   ├── insert-cnpj-naturezas-juridicas.sql # Naturezas jurídicas
+│   ├── insert-cnpj-qualificacao-socios.sql # Qualificações de sócios
+│   └── insert-cnpj-motivos.sql # Motivos de situação cadastral
 ├── output/                     # Dados de saída (gerado automaticamente)
 ├── requirements.txt           # Dependências Python
 ├── pyproject.toml            # Configuração do projeto
@@ -43,13 +52,29 @@ pip install -r requirements.txt
 ```
 
 2. **Configurar banco de dados:**
-```bash
-# 1. Criar o banco de dados MySQL
-mysql -u root -p -e "CREATE DATABASE cnpj;"
+   
+   📖 **Guia completo**: [docs/INSTALACAO_BANCO.md](docs/INSTALACAO_BANCO.md)
+   
+   ```bash
+   # 1. Criar o banco de dados MySQL
+   mysql -u root -p -e "CREATE DATABASE cnpj CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
 
-# 2. Importar as tabelas usando os scripts DDL
-mysql -u root -p cnpj < data/ddls.sql
-```
+   # 2. Criar a estrutura das tabelas
+   mysql -u root -p cnpj < data/ddls.sql
+
+   # 3. Popular as tabelas de referência (obrigatório)
+   mysql -u root -p cnpj < data/insert-cnpj-cnaes.sql
+   mysql -u root -p cnpj < data/insert-cnpj-paises.sql
+   mysql -u root -p cnpj < data/insert-cnpj-municipios.sql
+   mysql -u root -p cnpj < data/insert-cnpj-naturezas-juridicas.sql
+   mysql -u root -p cnpj < data/insert-cnpj-qualificacao-socios.sql
+   mysql -u root -p cnpj < data/insert-cnpj-motivos.sql
+
+   # 4. Importar dados das empresas (opcional - apenas se você tiver os dados)
+   # mysql -u root -p cnpj < dados_empresas.sql
+   # mysql -u root -p cnpj < dados_estabelecimentos.sql
+   # mysql -u root -p cnpj < dados_socios.sql
+   ```
 
 3. **Configurar variáveis de ambiente:**
 ```bash
@@ -209,6 +234,91 @@ O CSV gerado contém as seguintes colunas principais:
 ### 🌍 Dados Geográficos
 - **Município, UF, País**: Localização completa
 - **CEP, Endereço**: Dados de localização detalhados
+
+## 🗄️ Instalação do Banco de Dados
+
+### **Estrutura do Banco**
+O sistema utiliza um banco MySQL com as seguintes tabelas principais:
+
+#### **Tabelas de Dados Principais:**
+- `cnpj_empresas` - Dados das empresas (razão social, natureza jurídica, capital social)
+- `cnpj_estabelecimentos` - Dados dos estabelecimentos (endereços, telefones, CNAEs)
+- `cnpj_socios` - Dados dos sócios (nomes, qualificações, datas de entrada)
+
+#### **Tabelas de Referência:**
+- `cnpj_cnaes` - Códigos de atividade econômica (CNAE)
+- `cnpj_municipios` - Códigos de municípios brasileiros
+- `cnpj_paises` - Códigos de países
+- `cnpj_naturezas_juridicas` - Naturezas jurídicas das empresas
+- `cnpj_qualificacao_socios` - Qualificações dos sócios
+- `cnpj_motivos` - Motivos de situação cadastral
+- `cnpj_simples` - Dados do Simples Nacional e MEI
+
+### **Scripts de Instalação Disponíveis**
+
+Na pasta `data/` você encontrará os seguintes scripts SQL:
+
+| Arquivo | Descrição | Tamanho |
+|---------|-----------|---------|
+| `ddls.sql` | Cria a estrutura das tabelas (CREATE TABLE) | ~5KB |
+| `insert-cnpj-cnaes.sql` | Popula tabela de CNAEs (~1.500 registros) | ~200KB |
+| `insert-cnpj-paises.sql` | Popula tabela de países (~280 registros) | ~15KB |
+| `insert-cnpj-municipios.sql` | Popula tabela de municípios (~5.500 registros) | ~300KB |
+| `insert-cnpj-naturezas-juridicas.sql` | Popula naturezas jurídicas | ~10KB |
+| `insert-cnpj-qualificacao-socios.sql` | Popula qualificações de sócios | ~5KB |
+| `insert-cnpj-motivos.sql` | Popula motivos de situação cadastral | ~5KB |
+
+### **Processo de Instalação Completo**
+
+#### **1. Criar o Banco de Dados**
+```bash
+mysql -u root -p -e "CREATE DATABASE cnpj CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+```
+
+#### **2. Criar a Estrutura das Tabelas**
+```bash
+mysql -u root -p cnpj < data/ddls.sql
+```
+
+#### **3. Popular Tabelas de Referência (Obrigatório)**
+```bash
+# Essas tabelas são essenciais para o funcionamento do sistema
+mysql -u root -p cnpj < data/insert-cnpj-cnaes.sql
+mysql -u root -p cnpj < data/insert-cnpj-paises.sql
+mysql -u root -p cnpj < data/insert-cnpj-municipios.sql
+mysql -u root -p cnpj < data/insert-cnpj-naturezas-juridicas.sql
+mysql -u root -p cnpj < data/insert-cnpj-qualificacao-socios.sql
+mysql -u root -p cnpj < data/insert-cnpj-motivos.sql
+```
+
+#### **4. Importar Dados das Empresas (Opcional)**
+```bash
+# Apenas se você tiver os dados das empresas CNPJ
+# Estes arquivos não estão incluídos no repositório
+mysql -u root -p cnpj < dados_empresas.sql
+mysql -u root -p cnpj < dados_estabelecimentos.sql
+mysql -u root -p cnpj < dados_socios.sql
+mysql -u root -p cnpj < dados_simples.sql
+```
+
+### **Verificação da Instalação**
+
+Após a instalação, você pode verificar se tudo está funcionando:
+
+```bash
+# Testar conexão com o banco
+python tests/test_connection.py
+
+# Executar teste completo com filtros
+python tests/test_exemplo_basico.py
+```
+
+### **Notas Importantes**
+
+- ⚠️ **Dados das empresas**: Os dados reais das empresas (tabelas `cnpj_empresas`, `cnpj_estabelecimentos`, `cnpj_socios`) não estão incluídos no repositório por questões de tamanho e licenciamento
+- ✅ **Tabelas de referência**: Todas as tabelas de referência estão incluídas e são essenciais para o funcionamento
+- 🔧 **Encoding**: O banco deve usar `utf8mb4` para suportar caracteres especiais
+- 📊 **Tamanho**: As tabelas de referência ocupam aproximadamente 600KB total
 
 ## Configurações Avançadas
 

@@ -28,7 +28,13 @@ cnpj-processor/
 ├── examples/                   # Exemplos e templates
 │   └── exemplos_filtros.json
 ├── data/                      # Scripts de banco de dados
-│   └── ddls.sql              # Scripts DDL para criar tabelas CNPJ
+│   ├── ddls.sql              # Estrutura das tabelas (CREATE TABLE)
+│   ├── insert-cnpj-cnaes.sql # Dados de CNAEs (~1.500 registros)
+│   ├── insert-cnpj-paises.sql # Dados de países (~280 registros)
+│   ├── insert-cnpj-municipios.sql # Dados de municípios (~5.500 registros)
+│   ├── insert-cnpj-naturezas-juridicas.sql # Naturezas jurídicas
+│   ├── insert-cnpj-qualificacao-socios.sql # Qualificações de sócios
+│   └── insert-cnpj-motivos.sql # Motivos de situação cadastral
 ├── output/                    # Dados de saída (gerado automaticamente)
 ├── requirements.txt           # Dependências Python
 ├── pyproject.toml            # Configuração do projeto
@@ -101,18 +107,34 @@ O sistema utiliza um banco MySQL com as seguintes tabelas principais:
 ### ⚙️ **Configuração**
 1. **Criar banco:**
    ```bash
-   mysql -u root -p -e "CREATE DATABASE cnpj;"
+   mysql -u root -p -e "CREATE DATABASE cnpj CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
    ```
 
-2. **Importar estrutura:**
+2. **Criar estrutura das tabelas:**
    ```bash
    mysql -u root -p cnpj < data/ddls.sql
    ```
 
-3. **Configurar variáveis:**
+3. **Popular tabelas de referência (obrigatório):**
+   ```bash
+   mysql -u root -p cnpj < data/insert-cnpj-cnaes.sql
+   mysql -u root -p cnpj < data/insert-cnpj-paises.sql
+   mysql -u root -p cnpj < data/insert-cnpj-municipios.sql
+   mysql -u root -p cnpj < data/insert-cnpj-naturezas-juridicas.sql
+   mysql -u root -p cnpj < data/insert-cnpj-qualificacao-socios.sql
+   mysql -u root -p cnpj < data/insert-cnpj-motivos.sql
+   ```
+
+4. **Configurar variáveis:**
    ```bash
    cp config.example.env .env
    # Editar .env com suas credenciais
+   ```
+
+5. **Testar instalação:**
+   ```bash
+   python tests/test_connection.py
+   python tests/test_exemplo_basico.py
    ```
 
 ### 📋 **Próximos Passos**
