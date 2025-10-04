@@ -78,7 +78,7 @@ python scripts/cnpj_socios.py
 python scripts/cnpj_simples.py
 ```
 
-**Nota:** Os scripts esperam os arquivos CSV no formato original da Receita Federal com os nomes específicos (ex: `K3241.K03200Y.D50913.EMPRECSV`).
+**Nota:** Os scripts esperam os arquivos CSV no formato original da Receita Federal com os nomes específicos na pasta `data/csv_source/` (ex: `K3241.K03200Y.D50913.EMPRECSV`).
 
 ### 5. Verificar a Instalação
 
@@ -134,12 +134,20 @@ scripts/cnpj_simples.py        # Carrega dados da tabela cnpj_simples
 
 ### Arquivos CSV esperados pelos scripts:
 
+Coloque os arquivos CSV originais da Receita Federal na pasta `data/csv_source/`:
+
 ```
-K3241.K03200Y.D50913.EMPRECSV    # Dados das empresas
-K3241.K03200Y.D50913.ESTABELE    # Dados dos estabelecimentos
-K3241.K03200Y.D50913.SOCIOCSV    # Dados dos sócios
-K3241.K03200Y.D50913.SIMPLES     # Dados do Simples Nacional
+data/csv_source/
+├── K3241.K03200Y0.D50913.EMPRECSV    # Dados das empresas (arquivo 0)
+├── K3241.K03200Y1.D50913.EMPRECSV    # Dados das empresas (arquivo 1)
+├── K3241.K03200Y2.D50913.EMPRECSV    # Dados das empresas (arquivo 2)
+├── ...                               # Arquivos 3-9 das empresas
+├── K3241.K03200Y.D50913.ESTABELE     # Dados dos estabelecimentos
+├── K3241.K03200Y.D50913.SOCIOCSV     # Dados dos sócios
+└── F.K03200$W.SIMPLES.CSV.D50913     # Dados do Simples Nacional
 ```
+
+> 📝 **Nota:** Os arquivos CSV grandes não são incluídos no repositório Git (gitignored) para manter o repositório leve.
 
 ## 🔧 Configuração de Usuário
 

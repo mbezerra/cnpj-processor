@@ -25,7 +25,7 @@ COLUMN_NAMES = [
     'ddd_fax', 'fax', 'correio_eletronico', 'situacao_especial',
     'data_situacao_especial'
 ]
-FILE_SOURCE = 'K3241.K03200Y.D50913.ESTABELE'
+FILE_SOURCE = 'data/csv_source/K3241.K03200Y.D50913.ESTABELE'
 TRECHO_BASE = 'K03200Y'
 resultados = []
 

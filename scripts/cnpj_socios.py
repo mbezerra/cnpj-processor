@@ -19,7 +19,7 @@ COLUMN_NAMES = [
     'codigo_qualificacao_socio', 'data_entrada_sociedade',
     'nome_representante_legal', 'cpf_representante_legal', 'x1', 'x2', 'x3'
 ]
-FILE_SOURCE = 'K3241.K03200Y.D50913.SOCIOCSV'
+FILE_SOURCE = 'data/csv_source/K3241.K03200Y.D50913.SOCIOCSV'
 TRECHO_BASE = 'K03200Y'
 resultados = []
 

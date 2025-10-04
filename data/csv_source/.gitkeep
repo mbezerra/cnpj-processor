@@ -1,0 +1,10 @@
+# Esta pasta contém os arquivos CSV originais da Receita Federal
+# Os arquivos CSV grandes são ignorados pelo Git (veja .gitignore)
+# 
+# Para carregar os dados, coloque os arquivos CSV aqui:
+# - K3241.K03200Y0.D50913.EMPRECSV (empresas)
+# - K3241.K03200Y1.D50913.EMPRECSV (empresas)
+# - ... (arquivos 2-9 das empresas)
+# - K3241.K03200Y.D50913.ESTABELE (estabelecimentos)
+# - K3241.K03200Y.D50913.SOCIOCSV (sócios)
+# - F.K03200$W.SIMPLES.CSV.D50913 (simples nacional)

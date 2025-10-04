@@ -18,7 +18,7 @@ COLUMN_NAMES = [
     'data_exclusao_simples', 'opcao_mei', 'data_opcao_mei',
     'data_exclusao_opcao_mei'
 ]
-FILE_SOURCE = 'F.K03200$W.SIMPLES.CSV.D50913'
+FILE_SOURCE = 'data/csv_source/F.K03200$W.SIMPLES.CSV.D50913'
 
 # Configuração do banco via variáveis de ambiente
 DB_HOST = os.getenv('DB_HOST', 'localhost')

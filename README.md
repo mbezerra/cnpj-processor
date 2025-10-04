@@ -24,14 +24,17 @@ cnpj-processor/
 │   ├── INSTALACAO_BANCO.md   # Guia de instalação do banco
 │   └── relacionamentos_tabelas.md # Relacionamentos das tabelas
 ├── examples/                   # Exemplos e templates
-├── data/                       # Scripts de banco de dados
-│   ├── ddls.sql              # Estrutura das tabelas (CREATE TABLE)
-│   ├── insert-cnpj-cnaes.sql # Dados de CNAEs
-│   ├── insert-cnpj-paises.sql # Dados de países
-│   ├── insert-cnpj-municipios.sql # Dados de municípios
-│   ├── insert-cnpj-naturezas-juridicas.sql # Naturezas jurídicas
-│   ├── insert-cnpj-qualificacao-socios.sql # Qualificações de sócios
-│   └── insert-cnpj-motivos.sql # Motivos de situação cadastral
+├── data/                       # Dados e scripts de banco
+│   ├── csv_source/           # Arquivos CSV originais da Receita Federal
+│   │   └── K3241.K03200Y*.EMPRECSV # Arquivos grandes (gitignored)
+│   └── sql/                  # Scripts de banco de dados
+│       ├── ddls.sql          # Estrutura das tabelas (CREATE TABLE)
+│       ├── insert-cnpj-cnaes.sql # Dados de CNAEs
+│       ├── insert-cnpj-paises.sql # Dados de países
+│       ├── insert-cnpj-municipios.sql # Dados de municípios
+│       ├── insert-cnpj-naturezas-juridicas.sql # Naturezas jurídicas
+│       ├── insert-cnpj-qualificacao-socios.sql # Qualificações de sócios
+│       └── insert-cnpj-motivos.sql # Motivos de situação cadastral
 ├── output/                     # Dados de saída (gerado automaticamente)
 ├── requirements.txt           # Dependências Python
 ├── pyproject.toml            # Configuração do projeto
@@ -64,15 +67,15 @@ pip install -r requirements.txt
    mysql -u root -p -e "CREATE DATABASE cnpj CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
 
    # 2. Criar a estrutura das tabelas
-   mysql -u root -p cnpj < data/ddls.sql
+   mysql -u root -p cnpj < data/sql/ddls.sql
 
    # 3. Popular as tabelas de referência (obrigatório)
-   mysql -u root -p cnpj < data/insert-cnpj-cnaes.sql
-   mysql -u root -p cnpj < data/insert-cnpj-paises.sql
-   mysql -u root -p cnpj < data/insert-cnpj-municipios.sql
-   mysql -u root -p cnpj < data/insert-cnpj-naturezas-juridicas.sql
-   mysql -u root -p cnpj < data/insert-cnpj-qualificacao-socios.sql
-   mysql -u root -p cnpj < data/insert-cnpj-motivos.sql
+   mysql -u root -p cnpj < data/sql/insert-cnpj-cnaes.sql
+   mysql -u root -p cnpj < data/sql/insert-cnpj-paises.sql
+   mysql -u root -p cnpj < data/sql/insert-cnpj-municipios.sql
+   mysql -u root -p cnpj < data/sql/insert-cnpj-naturezas-juridicas.sql
+   mysql -u root -p cnpj < data/sql/insert-cnpj-qualificacao-socios.sql
+   mysql -u root -p cnpj < data/sql/insert-cnpj-motivos.sql
 
    # 4. Carregar dados das empresas (opcional)
    Nota: Requer arquivos CSV originais da Receita Federal
@@ -263,7 +266,7 @@ O sistema utiliza um banco MySQL com as seguintes tabelas principais:
 
 ### **📊 Scripts de Instalação Disponíveis**
 
-Na pasta `data/` você encontrará os seguintes scripts SQL:
+Na pasta `data/sql/` você encontrará os seguintes scripts SQL:
 
 | 📁 Arquivo | 📝 Descrição | 📏 Tamanho | 📈 Registros |
 |------------|--------------|------------|--------------|
@@ -316,7 +319,7 @@ python scripts/cnpj_socios.py
 python scripts/cnpj_simples.py
 ```
 
-> 📝 **Nota:** Os scripts esperam arquivos CSV no formato original da Receita Federal (ex: `K3241.K03200Y.D50913.EMPRECSV`). Estes arquivos não estão incluídos no repositório.
+> 📝 **Nota:** Os scripts esperam arquivos CSV no formato original da Receita Federal (ex: `K3241.K03200Y.D50913.EMPRECSV`) na pasta `data/csv_source/`. Estes arquivos grandes não estão incluídos no repositório (gitignored).
 
 ### **✅ Verificação da Instalação**
 

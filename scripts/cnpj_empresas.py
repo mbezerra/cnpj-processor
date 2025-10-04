@@ -18,7 +18,7 @@ COLUMN_NAMES = [
     'cnpj_part1', 'razao_social', 'natureza_juridica', 'qualificacao_socio',
     'capital_social', 'porte_empresa', 'x'
 ]
-FILE_SOURCE = 'K3241.K03200Y.D50913.EMPRECSV'
+FILE_SOURCE = 'data/csv_source/K3241.K03200Y.D50913.EMPRECSV'
 TRECHO_BASE = 'K03200Y'
 resultados = []
 # Configuração do banco via variáveis de ambiente

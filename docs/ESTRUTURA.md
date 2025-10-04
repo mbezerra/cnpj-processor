@@ -31,14 +31,19 @@ cnpj-processor/
 │   └── relacionamentos_tabelas.md
 ├── examples/                   # Exemplos e templates
 │   └── exemplos_filtros.json
-├── data/                      # Scripts de banco de dados
-│   ├── ddls.sql              # Estrutura das tabelas (CREATE TABLE)
-│   ├── insert-cnpj-cnaes.sql # Dados de CNAEs (~1.500 registros)
-│   ├── insert-cnpj-paises.sql # Dados de países (~280 registros)
-│   ├── insert-cnpj-municipios.sql # Dados de municípios (~5.500 registros)
-│   ├── insert-cnpj-naturezas-juridicas.sql # Naturezas jurídicas
-│   ├── insert-cnpj-qualificacao-socios.sql # Qualificações de sócios
-│   └── insert-cnpj-motivos.sql # Motivos de situação cadastral
+├── data/                      # Dados e scripts de banco
+│   ├── csv_source/           # Arquivos CSV originais da Receita Federal
+│   │   ├── K3241.K03200Y0.D50913.EMPRECSV # Arquivos de empresas
+│   │   ├── K3241.K03200Y1.D50913.EMPRECSV # (10 arquivos total)
+│   │   └── ...               # Outros arquivos CSV grandes (gitignored)
+│   └── sql/                  # Scripts de banco de dados
+│       ├── ddls.sql          # Estrutura das tabelas (CREATE TABLE)
+│       ├── insert-cnpj-cnaes.sql # Dados de CNAEs (~1.500 registros)
+│       ├── insert-cnpj-paises.sql # Dados de países (~280 registros)
+│       ├── insert-cnpj-municipios.sql # Dados de municípios (~5.500 registros)
+│       ├── insert-cnpj-naturezas-juridicas.sql # Naturezas jurídicas
+│       ├── insert-cnpj-qualificacao-socios.sql # Qualificações de sócios
+│       └── insert-cnpj-motivos.sql # Motivos de situação cadastral
 ├── output/                    # Dados de saída (gerado automaticamente)
 ├── requirements.txt           # Dependências Python
 ├── pyproject.toml            # Configuração do projeto
