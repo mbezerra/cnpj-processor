@@ -559,6 +559,5 @@ python scripts/main.py --json --limit 500 --output output/sp_cnae.csv
 - ✅ Correção do código do país implementada
 - ✅ Processamento sem limite disponível
 - ✅ Sistema de filtros JSON implementado
-- 🔄 Adicionar colunas calculadas conforme especificações
 - 🔄 Otimizar consultas para grandes volumes de dados
 - 🔄 Implementar processamento em lotes
