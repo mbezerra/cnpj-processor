@@ -1,0 +1,40 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "CNPJ Processor - Main",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/scripts/main.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "args": ["--limit", "10"]
+        },
+        {
+            "name": "CNPJ Processor - Test Connection",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/scripts/test_connection.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "CNPJ Processor - Filters",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/scripts/main.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "args": ["--filters", "--limit", "50"]
+        },
+        {
+            "name": "CNPJ Processor - JSON",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/scripts/main.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "args": ["--json", "--limit", "50"]
+        }
+    ]
+}

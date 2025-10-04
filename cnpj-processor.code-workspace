@@ -1,0 +1,24 @@
+{
+    "folders": [
+        {
+            "name": "cnpj-processor",
+            "path": "."
+        }
+    ],
+    "settings": {
+        "python.defaultInterpreterPath": "/home/marcos/anaconda3/bin/python",
+        "python.terminal.activateEnvironment": true,
+        "python.terminal.activateEnvInCurrentTerminal": true,
+        "makefile.configureOnOpen": false,
+        "project.name": "cnpj-processor",
+        "project.description": "Sistema de Processamento de Dados CNPJ"
+    },
+    "extensions": {
+        "recommendations": [
+            "ms-python.python",
+            "ms-python.pylint",
+            "ms-python.black-formatter",
+            "ms-vscode.makefile-tools"
+        ]
+    }
+}

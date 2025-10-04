@@ -1,0 +1,33 @@
+{
+  "exemplo_basico": {
+    "uf": "BA",
+    "codigo_municipio": 3455,
+    "situacao_cadastral": "ativos"
+  },
+  "exemplo_completo": {
+    "uf": "SP",
+    "codigo_municipio": 7107,
+    "situacao_cadastral": "ativos",
+    "cnae_codes": ["4781400", "4754701"],
+    "data_inicio_atividade": {
+      "inicio": "20200101",
+      "fim": "20231231"
+    },
+    "com_email": true,
+    "com_telefone": true,
+    "tipo_telefone": "celular",
+    "opcao_tributaria": "mei",
+    "capital_social": "10k"
+  },
+  "exemplo_mei": {
+    "situacao_cadastral": "ativos",
+    "opcao_tributaria": "mei",
+    "com_email": true,
+    "com_telefone": true
+  },
+  "exemplo_geografico": {
+    "uf": "RJ",
+    "situacao_cadastral": "ativos",
+    "capital_social": "50k"
+  }
+}

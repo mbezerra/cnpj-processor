@@ -1,0 +1,8 @@
+{
+    "python.defaultInterpreterPath": "/home/marcos/anaconda3/bin/python",
+    "python.terminal.activateEnvironment": true,
+    "python.terminal.activateEnvInCurrentTerminal": true,
+    "makefile.configureOnOpen": false,
+    "project.name": "cnpj-processor",
+    "project.description": "Sistema de Processamento de Dados CNPJ"
+}
