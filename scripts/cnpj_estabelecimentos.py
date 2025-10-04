@@ -1,30 +1,55 @@
+"""
+Script para carregar dados de estabelecimentos CNPJ no banco de dados MySQL.
+Processa arquivos CSV da Receita Federal e insere na tabela
+cnpj_estabelecimentos.
+"""
+
+import gc
+import os
+
 import pandas as pd
 from sqlalchemy import create_engine
-import gc
+from dotenv import load_dotenv
 
-tableName = 'cnpj_estabelecimentos'
-columnNames = [
-    'cnpj_part1', 'cnpj_part2', 'cnpj_part3', 'identificador_matriz_filial', 'nome_fantasia', 'situacao_cadastral',
-    'data_situacao_cadastral', 'motivo_situacao_cadastral', 'cidade_estrangeira', 'codigo_pais', 'data_inicio_atividade', 'cnae',
-    'cnaes_secundarios', 'tipo_logradouro', 'logradouro', 'numero', 'complemento', 'bairro', 'cep', 'uf',
-    'codigo_municipio', 'ddd1', 'telefone1', 'ddd2', 'telefone2', 'ddd_fax', 'fax', 'correio_eletronico',
-    'situacao_especial', 'data_situacao_especial'
+# Carrega variáveis de ambiente
+load_dotenv()
+
+TABLE_NAME = 'cnpj_estabelecimentos'
+COLUMN_NAMES = [
+    'cnpj_part1', 'cnpj_part2', 'cnpj_part3', 'identificador_matriz_filial',
+    'nome_fantasia', 'situacao_cadastral', 'data_situacao_cadastral',
+    'motivo_situacao_cadastral', 'cidade_estrangeira', 'codigo_pais',
+    'data_inicio_atividade', 'cnae', 'cnaes_secundarios', 'tipo_logradouro',
+    'logradouro', 'numero', 'complemento', 'bairro', 'cep', 'uf',
+    'codigo_municipio', 'ddd1', 'telefone1', 'ddd2', 'telefone2',
+    'ddd_fax', 'fax', 'correio_eletronico', 'situacao_especial',
+    'data_situacao_especial'
 ]
-fileSource = 'K3241.K03200Y.D50913.ESTABELE'
-trecho_base = 'K03200Y'
+FILE_SOURCE = 'K3241.K03200Y.D50913.ESTABELE'
+TRECHO_BASE = 'K03200Y'
 resultados = []
-engine = create_engine('mysql+pymysql://prospectar:Mova1520#@127.0.0.1/cnpj')
+
+# Configuração do banco via variáveis de ambiente
+DB_HOST = os.getenv('DB_HOST', 'localhost')
+DB_PORT = os.getenv('DB_PORT', '3306')
+DB_USER = os.getenv('DB_USER', 'root')
+DB_PASSWORD = os.getenv('DB_PASSWORD', '')
+DB_NAME = os.getenv('DB_NAME', 'cnpj')
+
+CONNECTION_STRING = (
+    f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+)
+engine = create_engine(CONNECTION_STRING)
 connection = engine.raw_connection()
 
 try:
     cursor = connection.cursor()
-    truncate_query = f"TRUNCATE TABLE {tableName};"
-    cursor.execute(truncate_query)
+    cursor.execute(f"TRUNCATE TABLE {TABLE_NAME};")
     connection.commit()
 
-    print(f"Tabela {tableName} truncada com sucesso.")
+    print(f"Tabela {TABLE_NAME} truncada com sucesso.")
 
-except Exception as e:
+except (ConnectionError, OSError, ValueError) as e:
     print(f"Erro ao truncar tabela: {e}")
 
 finally:
@@ -32,17 +57,20 @@ finally:
         connection.close()
         print('Conexão fechada.')
 
-for i in range(10):
-    trecho_modificado = trecho_base + str(i)
-    file_modificado = fileSource.replace(trecho_base, trecho_modificado)
-    resultados.append(file_modificado)
+for file_idx in range(10):
+    resultados.append(
+        FILE_SOURCE.replace(TRECHO_BASE, TRECHO_BASE + str(file_idx)))
 
 
-def insert_in_batches(df, tableName, engine, df_part=1, csv_name='', batchSize=1000):
-    for i in range(0, len(df), batchSize):
-        dfBatch = df.iloc[i:i + batchSize]
-        dfBatch.to_sql(tableName, con=engine, if_exists='append', index=False)
-        print(f"Inserido lote {i} a {i + batchSize} do DF{df_part} para o CSV {csv_name}")
+def insert_in_batches(dataframe, table_name, db_engine, df_part=1,
+                      csv_name='', batch_size=1000):
+    """Insere DataFrame no banco em lotes para otimizar performance."""
+    for batch_idx in range(0, len(dataframe), batch_size):
+        df_batch = dataframe.iloc[batch_idx:batch_idx + batch_size]
+        df_batch.to_sql(table_name, con=db_engine, if_exists='append',
+                        index=False)
+        print(f"Inserido lote {batch_idx} a {batch_idx + batch_size} "
+              f"do DF{df_part} para o CSV {csv_name}")
 
 
 for csv in resultados:
@@ -54,15 +82,18 @@ for csv in resultados:
     remaining = num_lines % 3
 
     df = pd.read_csv(
-        csv, sep=';', encoding='iso-8859-1', header=None, names=columnNames,
+        csv, sep=';', encoding='iso-8859-1', header=None, names=COLUMN_NAMES,
         nrows=part_size + (1 if remaining > 0 else 0),
         low_memory=False
     )
 
     df = df.fillna('')
-    df['cnpj_part1'] = df['cnpj_part1'].astype(str).apply(lambda x: x.zfill(8))
-    df['cnpj_part2'] = df['cnpj_part2'].astype(str).apply(lambda x: x.zfill(4))
-    df['cnpj_part3'] = df['cnpj_part3'].astype(str).apply(lambda x: x.zfill(2))
+    df['cnpj_part1'] = df['cnpj_part1'].astype(str).apply(
+        lambda x: x.zfill(8))
+    df['cnpj_part2'] = df['cnpj_part2'].astype(str).apply(
+        lambda x: x.zfill(4))
+    df['cnpj_part3'] = df['cnpj_part3'].astype(str).apply(
+        lambda x: x.zfill(2))
     df['cep'] = pd.to_numeric(df['cep'], errors='coerce')
     df['cep'] = df['cep'].fillna(0).astype(int).astype(str)
     df['cep'] = df['cep'].astype(str).apply(lambda x: x.zfill(8))
@@ -72,12 +103,15 @@ for csv in resultados:
     df['ddd2'] = df['ddd2'].fillna(0).astype(int).astype(str)
     df['ddd_fax'] = pd.to_numeric(df['ddd_fax'], errors='coerce')
     df['ddd_fax'] = df['ddd_fax'].fillna(0).astype(int).astype(str)
-    df['data_situacao_especial'] = pd.to_numeric(df['data_situacao_especial'], errors='coerce')
-    df['data_situacao_especial'] = df['data_situacao_especial'].fillna(0).astype(int).astype(str)
-    df['data_situacao_especial'] = df['data_situacao_especial'].astype(str).apply(lambda x: x.zfill(8))
+    df['data_situacao_especial'] = pd.to_numeric(
+        df['data_situacao_especial'], errors='coerce')
+    df['data_situacao_especial'] = (
+        df['data_situacao_especial'].fillna(0).astype(int).astype(str))
+    df['data_situacao_especial'] = (
+        df['data_situacao_especial'].astype(str).apply(lambda x: x.zfill(8)))
     df['codigo_pais'] = df['codigo_pais'].replace('', '0').astype(int)
 
-    insert_in_batches(df, tableName, engine, 1, csv, batchSize=2000)
+    insert_in_batches(df, TABLE_NAME, engine, 1, csv, batch_size=2000)
 
     del df
     gc.collect()
@@ -86,15 +120,19 @@ for csv in resultados:
 
     # noinspection PyTypeChecker
     df = pd.read_csv(
-        csv, sep=';', encoding='iso-8859-1', header=None, names=columnNames,
-        skiprows=part_size + (1 if remaining > 0 else 0), nrows=part_size + (1 if remaining > 1 else 0),
+        csv, sep=';', encoding='iso-8859-1', header=None, names=COLUMN_NAMES,
+        skiprows=part_size + (1 if remaining > 0 else 0),
+        nrows=part_size + (1 if remaining > 1 else 0),
         low_memory=False
     )
 
     df = df.fillna('')
-    df['cnpj_part1'] = df['cnpj_part1'].astype(str).apply(lambda x: x.zfill(8))
-    df['cnpj_part2'] = df['cnpj_part2'].astype(str).apply(lambda x: x.zfill(4))
-    df['cnpj_part3'] = df['cnpj_part3'].astype(str).apply(lambda x: x.zfill(2))
+    df['cnpj_part1'] = df['cnpj_part1'].astype(str).apply(
+        lambda x: x.zfill(8))
+    df['cnpj_part2'] = df['cnpj_part2'].astype(str).apply(
+        lambda x: x.zfill(4))
+    df['cnpj_part3'] = df['cnpj_part3'].astype(str).apply(
+        lambda x: x.zfill(2))
     df['cep'] = pd.to_numeric(df['cep'], errors='coerce')
     df['cep'] = df['cep'].fillna(0).astype(int).astype(str)
     df['cep'] = df['cep'].astype(str).apply(lambda x: x.zfill(8))
@@ -104,12 +142,15 @@ for csv in resultados:
     df['ddd2'] = df['ddd2'].fillna(0).astype(int).astype(str)
     df['ddd_fax'] = pd.to_numeric(df['ddd_fax'], errors='coerce')
     df['ddd_fax'] = df['ddd_fax'].fillna(0).astype(int).astype(str)
-    df['data_situacao_especial'] = pd.to_numeric(df['data_situacao_especial'], errors='coerce')
-    df['data_situacao_especial'] = df['data_situacao_especial'].fillna(0).astype(int).astype(str)
-    df['data_situacao_especial'] = df['data_situacao_especial'].astype(str).apply(lambda x: x.zfill(8))
+    df['data_situacao_especial'] = pd.to_numeric(
+        df['data_situacao_especial'], errors='coerce')
+    df['data_situacao_especial'] = (
+        df['data_situacao_especial'].fillna(0).astype(int).astype(str))
+    df['data_situacao_especial'] = (
+        df['data_situacao_especial'].astype(str).apply(lambda x: x.zfill(8)))
     df['codigo_pais'] = df['codigo_pais'].replace('', '0').astype(int)
 
-    insert_in_batches(df, tableName, engine, 2, csv, batchSize=2000)
+    insert_in_batches(df, TABLE_NAME, engine, 2, csv, batch_size=2000)
 
     del df
     gc.collect()
@@ -118,15 +159,19 @@ for csv in resultados:
 
     # noinspection PyTypeChecker
     df = pd.read_csv(
-        csv, sep=';', encoding='iso-8859-1', header=None, names=columnNames,
-        skiprows=part_size * 2 + (1 if remaining > 0 else 0) + (1 if remaining > 1 else 0),
+        csv, sep=';', encoding='iso-8859-1', header=None, names=COLUMN_NAMES,
+        skiprows=(part_size * 2 + (1 if remaining > 0 else 0) +
+                  (1 if remaining > 1 else 0)),
         low_memory=False
     )
 
     df = df.fillna('')
-    df['cnpj_part1'] = df['cnpj_part1'].astype(str).apply(lambda x: x.zfill(8))
-    df['cnpj_part2'] = df['cnpj_part2'].astype(str).apply(lambda x: x.zfill(4))
-    df['cnpj_part3'] = df['cnpj_part3'].astype(str).apply(lambda x: x.zfill(2))
+    df['cnpj_part1'] = df['cnpj_part1'].astype(str).apply(
+        lambda x: x.zfill(8))
+    df['cnpj_part2'] = df['cnpj_part2'].astype(str).apply(
+        lambda x: x.zfill(4))
+    df['cnpj_part3'] = df['cnpj_part3'].astype(str).apply(
+        lambda x: x.zfill(2))
     df['cep'] = pd.to_numeric(df['cep'], errors='coerce')
     df['cep'] = df['cep'].fillna(0).astype(int).astype(str)
     df['cep'] = df['cep'].astype(str).apply(lambda x: x.zfill(8))
@@ -136,11 +181,14 @@ for csv in resultados:
     df['ddd2'] = df['ddd2'].fillna(0).astype(int).astype(str)
     df['ddd_fax'] = pd.to_numeric(df['ddd_fax'], errors='coerce')
     df['ddd_fax'] = df['ddd_fax'].fillna(0).astype(int).astype(str)
-    df['data_situacao_especial'] = pd.to_numeric(df['data_situacao_especial'], errors='coerce')
-    df['data_situacao_especial'] = df['data_situacao_especial'].fillna(0).astype(int).astype(str)
-    df['data_situacao_especial'] = df['data_situacao_especial'].astype(str).apply(lambda x: x.zfill(8))
+    df['data_situacao_especial'] = pd.to_numeric(
+        df['data_situacao_especial'], errors='coerce')
+    df['data_situacao_especial'] = (
+        df['data_situacao_especial'].fillna(0).astype(int).astype(str))
+    df['data_situacao_especial'] = (
+        df['data_situacao_especial'].astype(str).apply(lambda x: x.zfill(8)))
     df['codigo_pais'] = df['codigo_pais'].replace('', '0').astype(int)
 
-    insert_in_batches(df, tableName, engine, 3, csv, batchSize=2000)
+    insert_in_batches(df, TABLE_NAME, engine, 3, csv, batch_size=2000)
 
     print("Finalizado o CSV " + csv)
