@@ -74,13 +74,13 @@ pip install -r requirements.txt
    mysql -u root -p cnpj < data/insert-cnpj-qualificacao-socios.sql
    mysql -u root -p cnpj < data/insert-cnpj-motivos.sql
 
-# 4. Carregar dados das empresas (opcional)
-#   Nota: Requer arquivos CSV originais da Receita Federal
-#   
-#   python scripts/cnpj_empresas.py      # Empresas
-#   python scripts/cnpj_estabelecimentos.py  # Estabelecimentos
-#   python scripts/cnpj_socios.py        # Sócios
-#   python scripts/cnpj_simples.py       # Simples Nacional
+   # 4. Carregar dados das empresas (opcional)
+   Nota: Requer arquivos CSV originais da Receita Federal
+   
+   python scripts/cnpj_empresas.py      # Empresas
+   python scripts/cnpj_estabelecimentos.py  # Estabelecimentos
+   python scripts/cnpj_socios.py        # Sócios
+   python scripts/cnpj_simples.py       # Simples Nacional
    ```
 
 3. **Configurar variáveis de ambiente:**
