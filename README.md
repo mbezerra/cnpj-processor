@@ -74,11 +74,13 @@ pip install -r requirements.txt
    mysql -u root -p cnpj < data/insert-cnpj-qualificacao-socios.sql
    mysql -u root -p cnpj < data/insert-cnpj-motivos.sql
 
-# 4. Carregar dados das empresas (opcional - apenas se você tiver os arquivos CSV da Receita Federal)
-# python scripts/cnpj_empresas.py
-# python scripts/cnpj_estabelecimentos.py
-# python scripts/cnpj_socios.py
-# python scripts/cnpj_simples.py
+# 4. Carregar dados das empresas (opcional)
+#   Nota: Apenas se você tiver os arquivos CSV originais da Receita Federal
+#   
+#   python scripts/cnpj_empresas.py
+#   python scripts/cnpj_estabelecimentos.py  
+#   python scripts/cnpj_socios.py
+#   python scripts/cnpj_simples.py
    ```
 
 3. **Configurar variáveis de ambiente:**
@@ -259,19 +261,19 @@ O sistema utiliza um banco MySQL com as seguintes tabelas principais:
 - `cnpj_motivos` - Motivos de situação cadastral
 - `cnpj_simples` - Dados do Simples Nacional e MEI
 
-### **Scripts de Instalação Disponíveis**
+### **📊 Scripts de Instalação Disponíveis**
 
 Na pasta `data/` você encontrará os seguintes scripts SQL:
 
-| Arquivo | Descrição | Tamanho |
-|---------|-----------|---------|
-| `ddls.sql` | Cria a estrutura das tabelas (CREATE TABLE) | ~5KB |
-| `insert-cnpj-cnaes.sql` | Popula tabela de CNAEs (~1.500 registros) | ~200KB |
-| `insert-cnpj-paises.sql` | Popula tabela de países (~280 registros) | ~15KB |
-| `insert-cnpj-municipios.sql` | Popula tabela de municípios (~5.500 registros) | ~300KB |
-| `insert-cnpj-naturezas-juridicas.sql` | Popula naturezas jurídicas | ~10KB |
-| `insert-cnpj-qualificacao-socios.sql` | Popula qualificações de sócios | ~5KB |
-| `insert-cnpj-motivos.sql` | Popula motivos de situação cadastral | ~5KB |
+| 📁 Arquivo | 📝 Descrição | 📏 Tamanho | 📈 Registros |
+|------------|--------------|------------|--------------|
+| `ddls.sql` | Estrutura das tabelas (CREATE TABLE) | ~5KB | - |
+| `insert-cnpj-cnaes.sql` | Códigos de atividade econômica (CNAE) | ~200KB | ~1.500 |
+| `insert-cnpj-paises.sql` | Códigos de países | ~15KB | ~280 |
+| `insert-cnpj-municipios.sql` | Códigos de municípios brasileiros | ~300KB | ~5.500 |
+| `insert-cnpj-naturezas-juridicas.sql` | Naturezas jurídicas das empresas | ~10KB | ~100 |
+| `insert-cnpj-qualificacao-socios.sql` | Qualificações dos sócios | ~5KB | ~50 |
+| `insert-cnpj-motivos.sql` | Motivos de situação cadastral | ~5KB | ~20 |
 
 ### **Processo de Instalação Completo**
 
@@ -297,10 +299,10 @@ mysql -u root -p cnpj < data/insert-cnpj-motivos.sql
 ```
 
 #### **4. Carregar Dados das Empresas (Opcional)**
-```bash
-# Apenas se você tiver os arquivos CSV originais da Receita Federal
-# Estes arquivos não estão incluídos no repositório
 
+⚠️ **Importante:** Este passo é opcional e requer os arquivos CSV originais da Receita Federal.
+
+```bash
 # Carregar dados das empresas
 python scripts/cnpj_empresas.py
 
@@ -314,27 +316,34 @@ python scripts/cnpj_socios.py
 python scripts/cnpj_simples.py
 ```
 
-**Nota:** Os scripts esperam os arquivos CSV no formato original da Receita Federal com os nomes específicos (ex: `K3241.K03200Y.D50913.EMPRECSV`).
+> 📝 **Nota:** Os scripts esperam arquivos CSV no formato original da Receita Federal (ex: `K3241.K03200Y.D50913.EMPRECSV`). Estes arquivos não estão incluídos no repositório.
 
-### **Verificação da Instalação**
+### **✅ Verificação da Instalação**
 
 Após a instalação, você pode verificar se tudo está funcionando:
 
 ```bash
-# Testar conexão com o banco
+# 🔗 Testar conexão com o banco
 python tests/test_connection.py
 
-# Executar teste completo com filtros
+# 🧪 Executar teste completo com filtros
 python tests/test_exemplo_basico.py
 ```
 
-### **Notas Importantes**
+**Resultados esperados:**
+- ✅ Conexão estabelecida com sucesso
+- ✅ Testes executados sem erros
+- ✅ Arquivo CSV gerado na pasta `output/`
 
-- ⚠️ **Dados das empresas**: Os arquivos CSV originais da Receita Federal não estão incluídos no repositório por questões de tamanho e licenciamento
-- ✅ **Tabelas de referência**: Todas as tabelas de referência estão incluídas e são essenciais para o funcionamento
-- 🔧 **Scripts de carregamento**: Os scripts na pasta `scripts/` processam os arquivos CSV originais e carregam no banco
-- 🔧 **Encoding**: O banco deve usar `utf8mb4` para suportar caracteres especiais
-- 📊 **Tamanho**: As tabelas de referência ocupam aproximadamente 600KB total
+### **📋 Notas Importantes**
+
+| Aspecto | Descrição |
+|---------|-----------|
+| ⚠️ **Dados das empresas** | Arquivos CSV originais da Receita Federal não estão incluídos no repositório |
+| ✅ **Tabelas de referência** | Todas as tabelas de referência estão incluídas e são essenciais |
+| 🔧 **Scripts de carregamento** | Scripts em `scripts/` processam CSV originais e carregam no banco |
+| 🔧 **Encoding** | Banco deve usar `utf8mb4` para suportar caracteres especiais |
+| 📊 **Tamanho** | Tabelas de referência ocupam aproximadamente 600KB total |
 
 ## Configurações Avançadas
 
