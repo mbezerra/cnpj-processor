@@ -196,9 +196,19 @@ class CNPJProcessor:
         if filters:
             query = self.apply_filters(query, filters)
         
-        # Adicionar LIMIT apenas se especificado
-        if limit > 0:
-            query += f" LIMIT {limit}"
+        # Ordenação por data de início de atividade descendente (mais recentes primeiro)
+        query += " ORDER BY est.data_inicio_atividade DESC, est.cnpj_part1"
+        
+        # Limite global máximo de 200.000 registros
+        MAX_LIMIT = 200000
+        if limit <= 0:
+            # Se não especificado limite, usar o máximo
+            query += f" LIMIT {MAX_LIMIT}"
+        else:
+            # Limitar ao máximo permitido
+            actual_limit = min(limit, MAX_LIMIT)
+            query += f" LIMIT {actual_limit}"
+            
         return query
     
     def apply_filters(self, query: str, filters: Dict[str, Any]) -> str:
@@ -483,6 +493,14 @@ class CNPJProcessor:
         """
         try:
             self.connect_database()
+            
+            MAX_LIMIT = 200000
+            actual_limit = min(limit, MAX_LIMIT) if limit > 0 else MAX_LIMIT
+            
+            logger.info(f"Limite solicitado: {limit}")
+            logger.info(f"Limite efetivo: {actual_limit} (máximo global: {MAX_LIMIT:,})")
+            logger.info(f"📊 Ordenação: Data de início de atividade DESC (mais recentes primeiro)")
+            
             df = self.process_data(limit, filters)
             self.save_to_csv(df, output_path)
             logger.info("Processamento concluído com sucesso!")

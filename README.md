@@ -130,14 +130,16 @@ python scripts/main.py
 # Processamento com limite específico
 python scripts/main.py --limit 100 --output output/meu_arquivo.csv
 
-# Processamento sem limite (TODOS os registros)
-python scripts/main.py --no-limit --output output/cnpj_completo.csv
+# Processamento máximo (200.000 registros mais recentes)
+python scripts/main.py --limit 200000 --output output/cnpj_recentes.csv
 
 # Testar conexão
 python scripts/main.py --test-connection
 ```
 
 > 📁 **Localização dos arquivos**: Os arquivos CSV são salvos automaticamente na pasta `output/` na raiz do projeto. O sistema detecta automaticamente o diretório correto, independentemente de onde o script for executado.
+
+> ⚠️ **Limite Global**: Todas as consultas são limitadas a **200.000 registros** ordenados por data de início de atividade descendente (empresas mais recentes primeiro).
 
 ### Opções de Linha de Comando
 ```bash
@@ -501,14 +503,14 @@ python scripts/main.py --json --limit 50 --output output/json_filtrado.csv
 # Processamento otimizado (100.000+ registros)
 python scripts/main_optimized.py --limit 100000
 
-# Processamento completo otimizado (milhões de registros)
-python scripts/main_optimized.py --limit 0 --output output/cnpj_completo_otimizado.csv
+# Processamento máximo otimizado (200.000 registros mais recentes)
+python scripts/main_optimized.py --limit 200000 --output output/cnpj_recentes_otimizado.csv
 
-# Apenas contar registros
+# Apenas contar registros (limitado a 200.000)
 python scripts/main_optimized.py --count-only --filters
 
 # Configurar tamanho do lote
-python scripts/main_optimized.py --batch-size 20000 --limit 500000
+python scripts/main_optimized.py --batch-size 20000 --limit 200000
 ```
 
 **Benefícios da versão otimizada:**
@@ -520,14 +522,14 @@ python scripts/main_optimized.py --batch-size 20000 --limit 500000
 
 ### 🚀 Produção
 ```bash
-# Processamento completo
-python scripts/main.py --no-limit --output output/cnpj_completo.csv
+# Processamento máximo (200.000 registros mais recentes)
+python scripts/main.py --limit 200000 --output output/cnpj_recentes.csv
 
 # Processamento com filtros interativos
-python scripts/main.py --filters --no-limit --output output/cnpj_filtrado.csv
+python scripts/main.py --filters --limit 200000 --output output/cnpj_filtrado.csv
 
 # Processamento com filtros JSON
-python scripts/main.py --json --no-limit --output output/cnpj_json.csv
+python scripts/main.py --json --limit 200000 --output output/cnpj_json.csv
 
 # Processamento por lotes
 python scripts/main.py --limit 10000 --output output/lote_1.csv
@@ -626,3 +628,5 @@ python scripts/main.py --limit 5
 - ✅ Processamento em lotes com cache inteligente
 - ✅ Índices de banco otimizados
 - ✅ Script otimizado para milhões de registros
+- ✅ Limite global de 200.000 registros implementado
+- ✅ Ordenação por data de início (mais recentes primeiro)

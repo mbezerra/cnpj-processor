@@ -84,7 +84,7 @@ class CNPJProcessorOptimized:
     
     def get_total_count(self, filters: Dict[str, Any] = None) -> int:
         """
-        Obtém o número total de registros que atendem aos filtros
+        Obtém o número total de registros que atendem aos filtros (limitado a 200.000)
         """
         query = """
         SELECT COUNT(*)
@@ -102,7 +102,9 @@ class CNPJProcessorOptimized:
         total = cursor.fetchone()[0]
         cursor.close()
         
-        return total
+        # Limitar ao máximo global de 200.000 registros
+        MAX_LIMIT = 200000
+        return min(total, MAX_LIMIT)
     
     def apply_filters_optimized(self, query: str, filters: Dict[str, Any], count_only: bool = False) -> str:
         """
@@ -238,12 +240,26 @@ class CNPJProcessorOptimized:
         if filters:
             query = self.apply_filters_optimized(query, filters)
         
-        # Ordenação para paginação consistente
-        query += " ORDER BY est.cnpj_part1, est.cnpj_part2, est.cnpj_part3"
+        # Ordenação por data de início de atividade descendente (mais recentes primeiro)
+        query += " ORDER BY est.data_inicio_atividade DESC, est.cnpj_part1"
         
-        # Paginação
-        if limit > 0:
-            query += f" LIMIT {limit} OFFSET {offset}"
+        # Limite global máximo de 200.000 registros
+        MAX_LIMIT = 200000
+        if limit <= 0:
+            # Se não especificado limite, usar o máximo
+            actual_limit = MAX_LIMIT
+        else:
+            # Limitar ao máximo permitido
+            actual_limit = min(limit, MAX_LIMIT)
+        
+        # Paginação respeitando o limite máximo
+        if offset + actual_limit > MAX_LIMIT:
+            actual_limit = MAX_LIMIT - offset
+            if actual_limit <= 0:
+                actual_limit = 0
+        
+        if actual_limit > 0:
+            query += f" LIMIT {actual_limit} OFFSET {offset}"
         
         return query
     
@@ -451,9 +467,12 @@ class CNPJProcessorOptimized:
             self.connect_database()
             self.setup_optimization_settings()
             
-            # Obter total de registros
+            # Obter total de registros (limitado a 200.000)
             total_records = self.get_total_count(filters)
+            MAX_LIMIT = 200000
+            
             logger.info(f"Total de registros a processar: {total_records:,}")
+            logger.info(f"📊 Limite global máximo: {MAX_LIMIT:,} registros (mais recentes por data de início)")
             
             if limit > 0:
                 total_records = min(total_records, limit)
