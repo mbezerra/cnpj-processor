@@ -70,7 +70,7 @@ class CNPJProcessorOptimized:
             "SET SESSION sort_buffer_size = 256*1024*1024",  # 256MB
             "SET SESSION join_buffer_size = 128*1024*1024",  # 128MB
             "SET SESSION read_buffer_size = 64*1024*1024",   # 64MB
-            "SET SESSION query_cache_type = OFF",            # Desabilita cache para consultas únicas
+            # query_cache_type removido - não existe no MySQL 8.0+
         ]
         
         for query in optimization_queries:

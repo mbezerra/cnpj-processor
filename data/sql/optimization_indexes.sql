@@ -45,8 +45,8 @@ SET SESSION join_buffer_size = 128*1024*1024;  -- 128MB
 -- Otimizar para consultas grandes
 SET SESSION read_buffer_size = 64*1024*1024;   -- 64MB
 
--- Desabilitar cache de query para consultas únicas grandes
-SET SESSION query_cache_type = OFF;
+-- Nota: query_cache foi removido no MySQL 8.0+
+-- Para MySQL 5.7 e anteriores, use: SET SESSION query_cache_type = OFF;
 
 -- =====================================================
 -- VIEWS OTIMIZADAS PARA CONSULTAS FREQUENTES
@@ -170,9 +170,9 @@ innodb_log_buffer_size = 64M              # Buffer de log maior
 innodb_flush_log_at_trx_commit = 2        # Menos I/O síncrono
 innodb_flush_method = O_DIRECT            # Evita duplo buffering
 
-# Otimizações de consulta
-query_cache_size = 256M                   # Cache de consultas
-query_cache_limit = 64M                   # Limite por consulta
+# Otimizações de consulta (MySQL 5.7 e anteriores)
+# query_cache_size = 256M                   # Cache de consultas (removido no MySQL 8.0+)
+# query_cache_limit = 64M                   # Limite por consulta (removido no MySQL 8.0+)
 tmp_table_size = 256M                     # Tabelas temporárias
 max_heap_table_size = 256M                # Tabelas em memória
 
