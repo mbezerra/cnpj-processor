@@ -1,6 +1,6 @@
 # Makefile para o CNPJ Processor
 
-.PHONY: help install test clean run-dev run-prod
+.PHONY: help install test clean run-dev run-prod download-csvs update-csvs
 
 help: ## Mostra esta ajuda
 	@echo "Comandos disponíveis:"
@@ -29,6 +29,12 @@ clean: ## Limpa arquivos temporários
 	find . -type d -name "__pycache__" -delete
 	rm -rf output/*.csv
 	rm -rf .pytest_cache
+
+download-csvs: ## Baixa os CSVs mais recentes da RFB
+	python scripts/download_rfb_csvs.py
+
+update-csvs: ## Atualiza os CSVs da RFB (versão simplificada)
+	python scripts/update_csvs.py
 
 setup: install ## Configura o ambiente de desenvolvimento
 	@echo "✅ Ambiente configurado com sucesso!"
