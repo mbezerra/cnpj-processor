@@ -17,7 +17,9 @@ CREATE TABLE `cnpj_empresas` (
   `porte_empresa` double DEFAULT NULL,
   PRIMARY KEY (`cnpj_part1`),
   KEY `cnpj_empresas_capital_social_IDX` (`capital_social`) USING BTREE,
-  KEY `cnpj_empresas_porte_empresa_IDX` (`porte_empresa`) USING BTREE
+  KEY `cnpj_empresas_porte_empresa_IDX` (`porte_empresa`) USING BTREE,
+  KEY `idx_empresas_cnpj_ultra` (`cnpj_part1`),
+  KEY `idx_empresas_cnpj` (`cnpj_part1`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- cnpj.cnpj_estabelecimentos definição
@@ -58,7 +60,16 @@ CREATE TABLE `cnpj_estabelecimentos` (
   KEY `cnpj_estabelecimentos_cnae_IDX` (`cnae`) USING BTREE,
   KEY `cnpj_estabelecimentos_uf_IDX` (`uf`) USING BTREE,
   KEY `cnpj_estabelecimentos_codigo_municipio_IDX` (`codigo_municipio`) USING BTREE,
-  KEY `cnpj_estabelecimentos_situacao_cadastral_IDX` (`situacao_cadastral`) USING BTREE
+  KEY `cnpj_estabelecimentos_situacao_cadastral_IDX` (`situacao_cadastral`) USING BTREE,
+  KEY `idx_estabelecimentos_cnpj_data_ultra` (`cnpj_part1`,`data_inicio_atividade` DESC),
+  KEY `idx_estabelecimentos_uf_situacao_data_ultra` (`uf`,`situacao_cadastral`,`data_inicio_atividade` DESC,`cnpj_part1`),
+  KEY `idx_estabelecimentos_cnae_data_ultra` (`cnae`,`data_inicio_atividade` DESC,`cnpj_part1`),
+  KEY `idx_estabelecimentos_municipio_situacao_ultra` (`codigo_municipio`,`situacao_cadastral`,`data_inicio_atividade` DESC,`cnpj_part1`),
+  KEY `idx_estabelecimentos_cnpj_data` (`cnpj_part1`,`data_inicio_atividade` DESC),
+  KEY `idx_estabelecimentos_uf_situacao` (`uf`,`situacao_cadastral`,`data_inicio_atividade` DESC),
+  KEY `idx_estabelecimentos_cnae_data` (`cnae`,`data_inicio_atividade` DESC),
+  KEY `idx_estabelecimentos_email` (`correio_eletronico`(50),`cnpj_part1`),
+  KEY `idx_estabelecimentos_telefone` (`telefone1`,`cnpj_part1`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- cnpj.cnpj_motivos definição
@@ -113,7 +124,9 @@ CREATE TABLE `cnpj_simples` (
   `opcao_mei` varchar(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `data_opcao_mei` varchar(8) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `data_exclusao_opcao_mei` varchar(8) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-  PRIMARY KEY (`cnpj_part1`)
+  PRIMARY KEY (`cnpj_part1`),
+  KEY `idx_simples_cnpj_ultra` (`cnpj_part1`),
+  KEY `idx_simples_cnpj` (`cnpj_part1`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- cnpj.cnpj_socios definição
@@ -124,5 +137,6 @@ CREATE TABLE `cnpj_socios` (
   `nome_socio` text,
   `codigo_qualificacao_socio` bigint DEFAULT NULL,
   `data_entrada_sociedade` bigint DEFAULT NULL,
-  `nome_representante_legal` text
+  `nome_representante_legal` text,
+  KEY `idx_socios_cnpj` (`cnpj_part1`(8),`codigo_qualificacao_socio`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
