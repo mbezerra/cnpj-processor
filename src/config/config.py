@@ -20,8 +20,10 @@ DATABASE_CONFIG = {
 }
 
 # Configurações de Saída
+# Obter diretório raiz do projeto (pasta pai de src/)
+project_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 OUTPUT_CONFIG = {
-    'output_dir': 'output',
+    'output_dir': os.path.join(project_root, 'output'),
     'csv_separator': ';',
     'csv_encoding': 'utf-8',
     'csv_quoting': 'all'

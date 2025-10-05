@@ -452,7 +452,7 @@ class CNPJProcessor:
         logger.info("Processamento concluído")
         return df
     
-    def save_to_csv(self, df: pd.DataFrame, output_path: str = "output/cnpj_data.csv"):
+    def save_to_csv(self, df: pd.DataFrame, output_path: str = None):
         """
         Salva o DataFrame em arquivo CSV
         
@@ -460,6 +460,11 @@ class CNPJProcessor:
             df: DataFrame com os dados
             output_path: Caminho do arquivo de saída
         """
+        if output_path is None:
+            # Usar configuração padrão
+            from src.config.config import OUTPUT_CONFIG
+            output_path = os.path.join(OUTPUT_CONFIG['output_dir'], 'cnpj_data.csv')
+        
         # Cria diretório de saída se não existir
         Path(output_path).parent.mkdir(parents=True, exist_ok=True)
         
@@ -467,7 +472,7 @@ class CNPJProcessor:
         df.to_csv(output_path, sep=';', index=False, quoting=csv.QUOTE_ALL, encoding='utf-8')
         logger.info(f"Dados salvos em: {output_path}")
     
-    def run(self, limit: int = 100, output_path: str = "output/cnpj_data.csv", filters: Dict[str, Any] = None):
+    def run(self, limit: int = 100, output_path: str = None, filters: Dict[str, Any] = None):
         """
         Executa o processamento completo
         

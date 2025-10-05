@@ -89,6 +89,9 @@ def coletar_filtros_json():
 
 def main():
     """Função principal do sistema"""
+    # Obter diretório raiz do projeto (pasta pai de scripts/)
+    project_root = Path(__file__).parent.parent
+    
     parser = argparse.ArgumentParser(description='CNPJ Processor - Sistema de Processamento de Dados CNPJ')
     parser.add_argument(
         '--limit', 
@@ -104,7 +107,7 @@ def main():
     parser.add_argument(
         '--output', 
         type=str, 
-        default='output/cnpj_empresas.csv',
+        default=str(project_root / 'output' / 'cnpj_empresas.csv'),
         help='Caminho do arquivo de saída (padrão: output/cnpj_empresas.csv)'
     )
     parser.add_argument(
@@ -132,8 +135,13 @@ def main():
         limit = args.limit
     
     try:
+        # Converter caminho relativo para absoluto se necessário
+        output_path = Path(args.output)
+        if not output_path.is_absolute():
+            output_path = project_root / args.output
+        
         # Criar diretório de saída se não existir
-        Path(args.output).parent.mkdir(parents=True, exist_ok=True)
+        output_path.parent.mkdir(parents=True, exist_ok=True)
         
         # Inicializar processador
         processor = CNPJProcessor()
@@ -169,9 +177,9 @@ def main():
             logger.info("🚀 Iniciando processamento SEM LIMITE (todos os registros)...")
         else:
             logger.info(f"🚀 Iniciando processamento com limite de {limit} registros...")
-        logger.info(f"📁 Arquivo de saída: {args.output}")
+        logger.info(f"📁 Arquivo de saída: {output_path}")
         
-        processor.run(limit=limit, output_path=args.output, filters=filters)
+        processor.run(limit=limit, output_path=str(output_path), filters=filters)
         
         logger.info("✅ Processamento concluído com sucesso!")
         
