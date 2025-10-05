@@ -117,7 +117,7 @@ WHERE est.situacao_cadastral = 2;
 ### 1. **Aplicar Índices de Banco**
 ```bash
 # Executar script de otimização
-mysql -u root -p cnpj < data/sql/optimization_indexes.sql
+mysql -u root -p cnpj < data/sql/essential_indexes.sql
 ```
 
 ### 2. **Usar Processador Otimizado**
