@@ -10,7 +10,10 @@ cnpj-processor/
 │   ├── __init__.py              # Pacote principal
 │   ├── cnpj_processor/          # Módulo de processamento
 │   │   ├── __init__.py
-│   │   └── cnpj_processor.py
+│   │   ├── cnpj_processor.py           # Processador padrão
+│   │   ├── cnpj_processor_optimized.py # Processador otimizado
+│   │   ├── cnpj_processor_ultra_optimized.py # Processador ultra otimizado
+│   │   └── cnpj_processor_streaming.py # Processador streaming
 │   ├── filters/                 # Módulo de filtros
 │   │   ├── __init__.py
 │   │   └── filters.py
@@ -19,6 +22,10 @@ cnpj-processor/
 │       └── config.py
 ├── scripts/                     # Scripts executáveis
 │   ├── main.py                 # Script principal de processamento
+│   ├── main_optimized.py       # Script otimizado para grandes volumes
+│   ├── main_ultra_optimized.py # Script ultra otimizado para máxima performance
+│   ├── main_streaming.py       # Script com processamento em streaming
+│   ├── benchmark_performance.py # Script de benchmark de performance
 │   ├── cnpj_empresas.py       # Carregamento de dados das empresas
 │   ├── cnpj_estabelecimentos.py # Carregamento de dados dos estabelecimentos
 │   ├── cnpj_socios.py         # Carregamento de dados dos sócios
@@ -170,10 +177,54 @@ O sistema utiliza um banco MySQL com as seguintes tabelas principais:
    python tests/test_exemplo_basico.py
    ```
 
+## 🚀 Processadores Disponíveis
+
+O projeto oferece **4 processadores diferentes** para diferentes cenários de uso:
+
+### **1. CNPJProcessor (Padrão)**
+- **Arquivo**: `src/cnpj_processor/cnpj_processor.py`
+- **Script**: `scripts/main.py`
+- **Uso**: Desenvolvimento e testes (até 10.000 registros)
+- **Características**: Simples, fácil de usar, ideal para testes
+
+### **2. CNPJProcessorOptimized**
+- **Arquivo**: `src/cnpj_processor/cnpj_processor_optimized.py`
+- **Script**: `scripts/main_optimized.py`
+- **Uso**: Volumes médios (10.000 - 100.000 registros)
+- **Características**: Paginação, cache básico, consultas otimizadas
+
+### **3. CNPJProcessorUltraOptimized**
+- **Arquivo**: `src/cnpj_processor/cnpj_processor_ultra_optimized.py`
+- **Script**: `scripts/main_ultra_optimized.py`
+- **Uso**: Volumes grandes (100.000+ registros)
+- **Características**: Cache agressivo, consultas mínimas, máximo desempenho
+
+### **4. CNPJProcessorStreaming**
+- **Arquivo**: `src/cnpj_processor/cnpj_processor_streaming.py`
+- **Script**: `scripts/main_streaming.py`
+- **Uso**: Volumes extremos com memória limitada
+- **Características**: Processamento linha por linha, mínimo uso de memória
+
+### **5. Benchmark de Performance**
+- **Arquivo**: `scripts/benchmark_performance.py`
+- **Uso**: Comparar performance entre processadores
+- **Características**: Testa todos os processadores com métricas detalhadas
+
+## 📊 Performance Esperada
+
+| Processador | Volume Ideal | Velocidade | Memória | Complexidade |
+|-------------|--------------|------------|---------|--------------|
+| Padrão | < 10k | 1x | 1x | Baixa |
+| Otimizado | 10k - 100k | 3x | 0.7x | Média |
+| ULTRA | 100k+ | 10x | 0.3x | Alta |
+| Streaming | Qualquer | 5x | 0.1x | Média |
+
 ### 📋 **Próximos Passos**
 1. ✅ Testar todos os scripts na nova estrutura
 2. ✅ Adicionar testes automatizados em `tests/`
-3. 🔄 Configurar CI/CD
-4. 🔄 Adicionar documentação de API
-5. 🔄 Implementar testes unitários adicionais
-6. 🔄 Configurar cobertura de testes
+3. ✅ Implementar múltiplos processadores
+4. ✅ Criar scripts de benchmark
+5. 🔄 Configurar CI/CD
+6. 🔄 Adicionar documentação de API
+7. 🔄 Implementar testes unitários adicionais
+8. 🔄 Configurar cobertura de testes
