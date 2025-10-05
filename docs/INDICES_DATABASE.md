@@ -6,36 +6,35 @@ Este documento explica como aplicar e gerenciar os índices de banco de dados pa
 
 ## 🗂️ Arquivos de Índices
 
-### ✅ **Arquivo Atual: `essential_indexes.sql`**
-- **Localização**: `data/sql/essential_indexes.sql`
-- **Tamanho**: ~110 linhas
+### ✅ **Script Python: `apply_indexes.py`**
+- **Localização**: `scripts/apply_indexes.py`
+- **Tipo**: Script Python seguro
 - **Índices**: 8 índices essenciais
-- **Status**: ✅ **RECOMENDADO**
+- **Status**: ✅ **ÚNICO MÉTODO RECOMENDADO**
 
-### ❌ **Arquivo Removido: `ultra_optimization_indexes.sql`**
-- **Status**: Removido (era muito complexo)
-- **Motivo**: Causava erros e era desnecessário
+### ❌ **Scripts SQL Removidos:**
+- **`essential_indexes.sql`** - Removido (aplicado com sucesso)
+- **`essential_indexes_safe.sql`** - Removido (aplicado com sucesso)
+- **`ultra_optimization_indexes.sql`** - Removido (era muito complexo)
+
+**Motivo**: Os índices já foram aplicados com sucesso e os scripts SQL não são mais necessários
 
 ## 🛠️ Como Aplicar os Índices
 
-### 1. **Método Recomendado: Script Python (Seguro)**
+### **Script Python (Único Método)**
 ```bash
-# Aplicar índices de forma segura (recomendado)
+# Aplicar índices de forma segura
 python scripts/apply_indexes.py
 ```
 
-### 2. **Método Alternativo: Script SQL Direto**
-```bash
-# Comando principal
-mysql -u seu_usuario -p sua_database < data/sql/essential_indexes.sql
+**✅ Vantagens do Script Python:**
+- Trata automaticamente erros de índices duplicados
+- Logs detalhados do processo
+- Verificação automática de resultados
+- Atualização de estatísticas
+- Teste de performance com EXPLAIN
 
-# Exemplo específico
-mysql -u root -p cnpj < data/sql/essential_indexes.sql
-
-# NOTA: Se receber erro "Duplicate key name", pode ignorar - significa que o índice já existe
-```
-
-### 3. **Verificar se Funcionou**
+### **Verificar se Funcionou**
 ```bash
 # O script Python já faz a verificação automaticamente
 # Mas você também pode verificar manualmente:
