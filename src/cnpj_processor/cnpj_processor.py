@@ -17,6 +17,7 @@ import pymysql
 from sqlalchemy import create_engine
 
 from src.config import DATABASE_CONFIG
+from src.config.config import OUTPUT_CONFIG
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "..", ".."))
 
@@ -543,8 +544,6 @@ class CNPJProcessor:
         """
         if output_path is None:
             # Usar configuração padrão
-            from src.config.config import OUTPUT_CONFIG
-
             output_path = os.path.join(
                 OUTPUT_CONFIG["output_dir"], "cnpj_data.csv"
             )
@@ -579,14 +578,14 @@ class CNPJProcessor:
         try:
             self.connect_database()
 
-            MAX_LIMIT = 200000
-            actual_limit = min(limit, MAX_LIMIT) if limit > 0 else MAX_LIMIT
+            max_limit = 200000
+            actual_limit = min(limit, max_limit) if limit > 0 else max_limit
 
             logger.info("Limite solicitado: %s", limit)
             logger.info(
                 "Limite efetivo: %s (máximo global: %s)",
                 actual_limit,
-                f"{MAX_LIMIT:,}"
+                f"{max_limit:,}"
             )
             logger.info(
                 "📊 Ordenação: Data de início de atividade DESC "

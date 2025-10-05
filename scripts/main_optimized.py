@@ -191,7 +191,7 @@ def main():
         
         # Executar processamento otimizado
         if args.limit == 0:
-            logger.info("🚀 Iniciando processamento OTIMIZADO SEM LIMITE (todos os registros)...")
+            logger.info("🚀 Iniciando processamento OTIMIZADO com limite máximo de 200.000 registros...")
         else:
             logger.info(f"🚀 Iniciando processamento OTIMIZADO com limite de {args.limit:,} registros...")
         
