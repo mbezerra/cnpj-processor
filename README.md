@@ -20,6 +20,8 @@ cnpj-processor/
 │   ├── main_ultra_optimized.py # Script ultra otimizado para máxima performance
 │   ├── main_streaming.py       # Script com processamento em streaming
 │   ├── benchmark_performance.py # Script de benchmark de performance
+│   ├── carregar_dados_completo.py # Script para carregar todos os dados em sequência
+│   ├── monitor_carregamento.py # Script para monitorar progresso dos carregamentos
 │   ├── cnpj_empresas.py       # Carregamento de dados das empresas
 │   ├── cnpj_estabelecimentos.py # Carregamento de dados dos estabelecimentos
 │   ├── cnpj_socios.py         # Carregamento de dados dos sócios
@@ -318,6 +320,16 @@ mysql -u root -p cnpj < data/insert-cnpj-motivos.sql
 
 ⚠️ **Importante:** Este passo é opcional e requer os arquivos CSV originais da Receita Federal.
 
+##### **Opção A: Carregamento Automático Completo (Recomendado)**
+```bash
+# Carregar todos os dados em sequência automaticamente
+python scripts/carregar_dados_completo.py
+
+# Monitorar o progresso em tempo real (em outro terminal)
+python scripts/monitor_carregamento.py
+```
+
+##### **Opção B: Carregamento Manual Individual**
 ```bash
 # Carregar dados das empresas
 python scripts/cnpj_empresas.py
@@ -333,6 +345,8 @@ python scripts/cnpj_simples.py
 ```
 
 > 📝 **Nota:** Os scripts esperam arquivos CSV no formato original da Receita Federal (ex: `K3241.K03200Y.D50913.EMPRECSV`) na pasta `data/csv_source/`. Estes arquivos grandes não estão incluídos no repositório (gitignored).
+
+> ⏱️ **Tempo estimado:** 10-20 horas para carregamento completo (dependendo do hardware).
 
 ### **✅ Verificação da Instalação**
 
@@ -496,9 +510,6 @@ python scripts/main.py --limit 100 --output output/teste.csv
 
 # Teste com filtros interativos
 python scripts/main.py --filters --limit 50 --output output/filtrado.csv
-
-# Teste com filtros JSON
-python scripts/main.py --json --limit 50 --output output/json_filtrado.csv
 ```
 
 ### 🚀 Processamento Otimizado para Grandes Volumes
@@ -553,9 +564,6 @@ python scripts/main.py --limit 200000 --output output/cnpj_recentes.csv
 # Processamento com filtros interativos
 python scripts/main.py --filters --limit 200000 --output output/cnpj_filtrado.csv
 
-# Processamento com filtros JSON
-python scripts/main.py --json --limit 200000 --output output/cnpj_json.csv
-
 # Processamento por lotes
 python scripts/main.py --limit 10000 --output output/lote_1.csv
 ```
@@ -572,38 +580,32 @@ python scripts/main.py --filters --limit 500 --output output/contatos_completos.
 python scripts/main.py --filters --limit 200 --output output/mei_capital.csv
 ```
 
-### 📄 Filtros JSON
+### 📄 Filtros Interativos
 ```bash
 # Exemplo: Empresas ativas na Bahia, município 3455
-python scripts/main.py --json --limit 100 --output output/ba_cicero_dantas.csv
+python scripts/main.py --filters --limit 100 --output output/ba_cicero_dantas.csv
 
 # Exemplo: Empresas com CNAE específico em SP
-python scripts/main.py --json --limit 500 --output output/sp_cnae.csv
+python scripts/main.py --filters --limit 500 --output output/sp_cnae.csv
 ```
 
-**Comportamento do Modo JSON:**
-- ✅ **JSON válido**: Processa com filtros aplicados
-- ❌ **JSON inválido**: Cancela operação com erro
-- ❌ **Sem JSON**: Cancela operação (não processa sem filtros)
+**Comportamento do Modo Interativo:**
+- ✅ **Sistema guiado**: Pergunta sobre cada tipo de filtro
+- ✅ **Validação automática**: Valida entrada em tempo real
+- ✅ **Flexível**: Pressione Enter para pular qualquer filtro
+- ✅ **Fácil de usar**: Interface amigável com instruções claras
 
-**Formato JSON de Exemplo:**
-```json
-{
-  "uf": "BA",
-  "codigo_municipio": 3455,
-  "situacao_cadastral": "ativos",
-  "cnae_codes": ["1234567", "7654321"],
-  "data_inicio_atividade": {
-    "inicio": "20200101",
-    "fim": "20231231"
-  },
-  "com_email": true,
-  "com_telefone": true,
-  "tipo_telefone": "celular",
-  "opcao_tributaria": "mei",
-  "capital_social": "10k"
-}
-```
+**Filtros Disponíveis:**
+- **Códigos CNAE**: Lista de códigos de atividade econômica
+- **UF**: Sigla do estado (ex: SP, RJ, MG)
+- **Código do Município**: Código de 4 dígitos do município
+- **Situação Cadastral**: Ativos, Inaptos, Inativos
+- **Data de Início**: Intervalo de datas (formato YYYYMMDD)
+- **Com Email**: S/N para registros com email
+- **Com Telefone**: S/N para registros com telefone
+- **Tipo de Telefone**: Fixo, Celular, Ambos
+- **Opção Tributária**: MEI, Sem MEI, Todas
+- **Capital Social**: Faixas de valor (>10k, >50k, >100k)
 
 **Nota sobre Códigos de Município:**
 - Os códigos seguem o padrão de **4 dígitos**

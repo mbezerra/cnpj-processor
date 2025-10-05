@@ -15,6 +15,7 @@ from pathlib import Path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from src.cnpj_processor.cnpj_processor_streaming import CNPJProcessorStreaming
+from src.filters import CNPJFilters
 
 # Configuração de logging
 logging.basicConfig(
@@ -24,14 +25,6 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-def load_filters_from_json(json_file: str) -> dict:
-    """Carrega filtros de arquivo JSON"""
-    try:
-        with open(json_file, 'r', encoding='utf-8') as f:
-            return json.load(f)
-    except Exception as e:
-        logger.error("Erro ao carregar arquivo de filtros: %s", e)
-        raise
 
 
 def main():
@@ -45,16 +38,13 @@ Exemplos de uso:
 1. Processamento básico:
    python scripts/main_streaming.py --limit 1000
 
-2. Processamento com filtros:
-   python scripts/main_streaming.py --limit 5000 --filters "{\\"uf\\": \\"SP\\", \\"situacao_cadastral\\": \\"ativos\\"}"
+2. Processamento com filtros interativos:
+   python scripts/main_streaming.py --limit 5000 --filters
 
-3. Processamento com arquivo de filtros:
-   python scripts/main_streaming.py --json examples/exemplos_filtros.json --exemplo exemplo_basico
-
-4. Processamento completo (máximo 200.000 registros):
+3. Processamento completo (máximo 200.000 registros):
    python scripts/main_streaming.py --limit 0
 
-5. Teste de conexão:
+4. Teste de conexão:
    python scripts/main_streaming.py --test-connection
         """
     )
@@ -74,20 +64,8 @@ Exemplos de uso:
     
     parser.add_argument(
         '--filters',
-        type=str,
-        help='Filtros em formato JSON'
-    )
-    
-    parser.add_argument(
-        '--json',
-        type=str,
-        help='Arquivo JSON com exemplos de filtros'
-    )
-    
-    parser.add_argument(
-        '--exemplo',
-        type=str,
-        help='Nome do exemplo de filtro a usar (ex: exemplo_basico, exemplo_completo)'
+        action='store_true',
+        help='Ativa modo interativo para configuração de filtros'
     )
     
     parser.add_argument(
@@ -118,24 +96,8 @@ Exemplos de uso:
     # Carregar filtros
     filters = None
     if args.filters:
-        try:
-            filters = json.loads(args.filters)
-        except json.JSONDecodeError as e:
-            logger.error("Erro ao parsear filtros JSON: %s", e)
-            return 1
-    
-    elif args.json and args.exemplo:
-        try:
-            filters_data = load_filters_from_json(args.json)
-            if args.exemplo in filters_data:
-                filters = filters_data[args.exemplo]
-                logger.info("Filtros carregados do exemplo: %s", args.exemplo)
-            else:
-                logger.error("Exemplo '%s' não encontrado no arquivo JSON", args.exemplo)
-                return 1
-        except Exception as e:
-            logger.error("Erro ao carregar filtros do JSON: %s", e)
-            return 1
+        filter_manager = CNPJFilters()
+        filters = filter_manager.coletar_filtros()
     
     # Inicializar processador streaming
     processor = CNPJProcessorStreaming()

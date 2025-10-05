@@ -27,62 +27,6 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-def coletar_filtros_json():
-    """
-    Coleta filtros via JSON de forma interativa
-    """
-    print("\n" + "="*60)
-    print("🔧 MODO FILTROS JSON (OTIMIZADO)")
-    print("="*60)
-    print("Cole o JSON com os filtros desejados abaixo.")
-    print("Exemplo de formato:")
-    print('{"uf": "SP", "codigo_municipio": 7107, "situacao_cadastral": "ativos"}')
-    print("\nFiltros disponíveis:")
-    print("- uf: Sigla do estado (ex: 'SP', 'RJ')")
-    print("- codigo_municipio: Código do município (ex: 7107)")
-    print("- situacao_cadastral: 'ativos', 'inaptos', 'inativos'")
-    print("- cnae_codes: Lista de códigos CNAE (ex: ['1234567', '7654321'])")
-    print("- data_inicio_atividade: {'inicio': '20200101', 'fim': '20231231'}")
-    print("- com_email: true/false")
-    print("- com_telefone: true/false")
-    print("- tipo_telefone: 'fixo', 'celular', 'ambos'")
-    print("- opcao_tributaria: 'mei', 'sem_mei', 'todas'")
-    print("- capital_social: '10k', '50k', '100k', 'qualquer'")
-    print("\nPressione Enter duas vezes para finalizar a entrada:")
-    print("-"*60)
-    
-    lines = []
-    empty_lines = 0
-    
-    while True:
-        try:
-            line = input()
-            if line.strip() == "":
-                empty_lines += 1
-                if empty_lines >= 2:
-                    break
-            else:
-                empty_lines = 0
-            lines.append(line)
-        except EOFError:
-            break
-    
-    json_text = "\n".join(lines).strip()
-    
-    if not json_text:
-        print("❌ Nenhum JSON fornecido.")
-        print("❌ Operação cancelada. É necessário fornecer um JSON válido para usar filtros.")
-        return "CANCELADO"
-    
-    try:
-        filters = json.loads(json_text)
-        print(f"✅ JSON processado com sucesso!")
-        print(f"📋 Filtros aplicados: {list(filters.keys())}")
-        return filters
-    except json.JSONDecodeError as e:
-        print(f"❌ Erro ao processar JSON: {e}")
-        print("❌ JSON inválido. Processando sem filtros.")
-        return None
 
 def main():
     """Função principal do sistema otimizado"""
@@ -121,11 +65,6 @@ def main():
         help='Ativa modo interativo para configuração de filtros'
     )
     parser.add_argument(
-        '--json', 
-        action='store_true',
-        help='Permite inserir filtros via JSON interativamente'
-    )
-    parser.add_argument(
         '--count-only',
         action='store_true',
         help='Apenas conta registros que atendem aos filtros (não processa)'
@@ -154,11 +93,6 @@ def main():
         if args.filters:
             filter_manager = CNPJFilters()
             filters = filter_manager.coletar_filtros()
-        elif args.json:
-            filters = coletar_filtros_json()
-            if filters == "CANCELADO":
-                logger.info("❌ Operação cancelada pelo usuário.")
-                return
         
         if args.test_connection:
             logger.info("🔍 Testando conexão com o banco de dados...")

@@ -121,4 +121,4 @@ data/csv_source/*.csv
 data/csv_source/*.EMPRECSV
 data/csv_source/*.ESTABELE
 data/csv_source/*.SOCIOCSV
-data/csv_source/*.SIMPLES
+data/csv_source/*.SIMPLES.*

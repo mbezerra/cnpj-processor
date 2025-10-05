@@ -26,6 +26,8 @@ cnpj-processor/
 │   ├── main_ultra_optimized.py # Script ultra otimizado para máxima performance
 │   ├── main_streaming.py       # Script com processamento em streaming
 │   ├── benchmark_performance.py # Script de benchmark de performance
+│   ├── carregar_dados_completo.py # Script para carregar todos os dados em sequência
+│   ├── monitor_carregamento.py # Script para monitorar progresso dos carregamentos
 │   ├── cnpj_empresas.py       # Carregamento de dados das empresas
 │   ├── cnpj_estabelecimentos.py # Carregamento de dados dos estabelecimentos
 │   ├── cnpj_socios.py         # Carregamento de dados dos sócios
@@ -209,6 +211,35 @@ O projeto oferece **4 processadores diferentes** para diferentes cenários de us
 - **Arquivo**: `scripts/benchmark_performance.py`
 - **Uso**: Comparar performance entre processadores
 - **Características**: Testa todos os processadores com métricas detalhadas
+
+## 🚀 Scripts de Carregamento de Dados
+
+O projeto inclui scripts especializados para carregar os dados originais da Receita Federal:
+
+### **1. Carregamento Automático Completo**
+- **Arquivo**: `scripts/carregar_dados_completo.py`
+- **Uso**: Carregar todos os dados em sequência automaticamente
+- **Características**:
+  - Executa automaticamente: empresas → estabelecimentos → sócios → simples
+  - Logs detalhados em arquivo e console
+  - Verificação de processos em execução
+  - Resumo final com estatísticas
+  - Tempo estimado: 10-20 horas
+
+### **2. Monitor de Carregamento**
+- **Arquivo**: `scripts/monitor_carregamento.py`
+- **Uso**: Monitorar progresso dos carregamentos em tempo real
+- **Características**:
+  - Estatísticas em tempo real do banco de dados
+  - Lista processos de carregamento em execução
+  - Atualização automática a cada 30 segundos
+  - Interface interativa
+
+### **3. Scripts Individuais**
+- **`cnpj_empresas.py`**: Carregamento de dados das empresas
+- **`cnpj_estabelecimentos.py`**: Carregamento de dados dos estabelecimentos
+- **`cnpj_socios.py`**: Carregamento de dados dos sócios
+- **`cnpj_simples.py`**: Carregamento de dados do Simples Nacional
 
 ## 📊 Performance Esperada
 

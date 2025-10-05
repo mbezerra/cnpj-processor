@@ -239,28 +239,45 @@ python scripts/main_optimized.py --limit 50000 --batch-size 25000
 python scripts/main_ultra_optimized.py --limit 200000 --batch-size 50000
 ```
 
-### **Filtros JSON**
+### **Sistema de Filtros Interativo**
 
-Todos os processadores suportam filtros via JSON:
+Todos os processadores suportam filtros interativos:
 
 ```bash
-# Filtro simples
-python scripts/main_optimized.py --filters '{"uf": "SP", "situacao_cadastral": "ativos"}'
+# Ativar modo de filtros interativo
+python scripts/main_optimized.py --filters
 
-# Filtro complexo
-python scripts/main_ultra_optimized.py --filters '{"uf": "SP", "com_email": true, "capital_social": "50k"}'
+# O sistema irá perguntar sobre cada tipo de filtro:
+# - Códigos CNAE
+# - UF (estado)
+# - Código do município
+# - Situação cadastral
+# - Data de início de atividade
+# - Com email
+# - Com telefone
+# - Tipo de telefone
+# - Opção tributária
+# - Capital social
 ```
 
-### **Arquivos de Filtros**
+**Exemplo de uso interativo:**
+```
+🔍 CONFIGURAÇÃO DE FILTROS
+==================================================
+Configure os filtros de pesquisa ou pressione Enter para pular
 
-Use arquivos JSON predefinidos:
+📋 FILTRO: Códigos CNAE
+Digite os códigos CNAE separados por vírgula (ex: 4781400,4782201)
+Ou pressione Enter para pular este filtro
+CNAE codes: 
 
-```bash
-# Usar exemplo básico
-python scripts/main_ultra_optimized.py --json examples/exemplos_filtros.json --exemplo exemplo_basico
+🌍 FILTRO: Unidade Federativa (UF)
+Digite a sigla da UF (ex: SP, RJ, MG)
+Ou pressione Enter para pular este filtro
+UF: SP
 
-# Usar exemplo completo
-python scripts/main_ultra_optimized.py --json examples/exemplos_filtros.json --exemplo exemplo_completo
+✅ Filtro UF aplicado: SP
+...
 ```
 
 ---
