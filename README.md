@@ -22,6 +22,7 @@ cnpj-processor/
 ├── docs/                       # Documentação
 │   ├── ESTRUTURA.md          # Estrutura do projeto
 │   ├── INSTALACAO_BANCO.md   # Guia de instalação do banco
+│   ├── TROUBLESHOOTING.md    # Solução de problemas
 │   └── relacionamentos_tabelas.md # Relacionamentos das tabelas
 ├── examples/                   # Exemplos e templates
 ├── data/                       # Dados e scripts de banco
@@ -121,7 +122,7 @@ make run-dev           # Executa em desenvolvimento
 
 ### Uso Básico (Recomendado)
 ```bash
-# Processamento com limite padrão (50 registros)
+# Processamento com limite padrão (50 registros) - salva em output/cnpj_empresas.csv
 python scripts/main.py
 
 # Processamento com limite específico
@@ -133,6 +134,8 @@ python scripts/main.py --no-limit --output output/cnpj_completo.csv
 # Testar conexão
 python scripts/main.py --test-connection
 ```
+
+> 📁 **Localização dos arquivos**: Os arquivos CSV são salvos automaticamente na pasta `output/` na raiz do projeto. O sistema detecta automaticamente o diretório correto, independentemente de onde o script for executado.
 
 ### Opções de Linha de Comando
 ```bash
@@ -471,6 +474,8 @@ LEFT JOIN cnpj_paises p ON (CASE WHEN est.codigo_pais = 0 THEN 105 ELSE est.codi
 
 ## Exemplos de Uso
 
+> 📁 **Nota sobre localização**: Todos os arquivos CSV são salvos na pasta `output/` na raiz do projeto. O sistema detecta automaticamente o diretório correto.
+
 ### 🧪 Desenvolvimento e Testes
 ```bash
 # Teste rápido (3 registros)
@@ -551,6 +556,27 @@ python scripts/main.py --json --limit 500 --output output/sp_cnae.csv
 - Correspondem à coluna `codigo` da tabela `cnpj_municipios`
 - Exemplos: 7107 (São Paulo), 3455 (Cicero Dantas), 6001 (Rio de Janeiro)
 
+## 🆘 Suporte e Troubleshooting
+
+### 📚 Documentação Disponível
+- **[docs/ESTRUTURA.md](docs/ESTRUTURA.md)**: Estrutura detalhada do projeto
+- **[docs/INSTALACAO_BANCO.md](docs/INSTALACAO_BANCO.md)**: Guia completo de instalação
+- **[docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md)**: Solução de problemas comuns
+
+### 🔧 Problemas Comuns
+- **Arquivos CSV no local errado**: Veja [TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md#-arquivos-csv-salvos-no-local-errado)
+- **Erro de conexão com banco**: Veja [TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md#-erro-de-conexão-com-mysql)
+- **Dependências não instaladas**: Veja [TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md#-dependências-não-instaladas)
+
+### 🧪 Testes e Verificação
+```bash
+# Testar conexão com banco
+python scripts/main.py --test-connection
+
+# Teste rápido com 5 registros
+python scripts/main.py --limit 5
+```
+
 ## Próximos Passos
 
 - ✅ Sistema base implementado
@@ -562,5 +588,10 @@ python scripts/main.py --json --limit 500 --output output/sp_cnae.csv
 - ✅ Correção do código do país implementada
 - ✅ Processamento sem limite disponível
 - ✅ Sistema de filtros JSON implementado
+- ✅ Estrutura de projeto modernizada
+- ✅ Documentação completa
+- ✅ Testes automatizados
+- ✅ Caminhos de saída corrigidos
+- ✅ Guia de troubleshooting criado
 - 🔄 Otimizar consultas para grandes volumes de dados
 - 🔄 Implementar processamento em lotes

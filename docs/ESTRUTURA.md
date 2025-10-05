@@ -72,7 +72,13 @@ cnpj-processor/
 - **`pyproject.toml`**: Configuração moderna do projeto
 - **`.gitignore`**: Controle de versão limpo
 - **`config.example.env`**: Template de configuração
-- **`data/ddls.sql`**: Scripts para criar estrutura do banco
+- **`data/sql/ddls.sql`**: Scripts para criar estrutura do banco
+
+### 📁 **Estrutura de Saída**
+- **`output/`**: Pasta para arquivos CSV gerados
+- **Caminhos absolutos**: Sistema detecta automaticamente a raiz do projeto
+- **Criação automática**: Diretórios são criados automaticamente quando necessário
+- **Localização fixa**: Arquivos sempre salvos em `output/` na raiz, independente do diretório de execução
 
 ### 🚀 **Comandos Disponíveis**
 ```bash
@@ -95,6 +101,15 @@ make clean            # Limpa arquivos temporários
 - `test_exemplo_basico.py` → `tests/test_exemplo_basico.py` (novo)
 - `exemplos_filtros.json` → `examples/exemplos_filtros.json`
 - `relacionamentos_tabelas.md` → `docs/relacionamentos_tabelas.md`
+
+### 📂 **Nova Estrutura de Dados**
+- **`data/sql/`**: Scripts SQL organizados (DDL e DML)
+  - `ddls.sql`: Estrutura das tabelas
+  - `insert-*.sql`: Dados de referência (CNAEs, municípios, etc.)
+- **`data/csv_source/`**: Arquivos CSV originais da Receita Federal
+  - Arquivos grandes são ignorados pelo Git (gitignored)
+  - `.gitkeep` mantém a pasta no repositório
+- **Scripts de carregamento**: Atualizados para usar novos caminhos
 
 ### 🔧 **Imports Atualizados**
 - Todos os imports foram atualizados para a nova estrutura

@@ -21,7 +21,7 @@ mysql -u root -p -e "CREATE DATABASE cnpj CHARACTER SET utf8mb4 COLLATE utf8mb4_
 
 ```bash
 # Executar script DDL para criar todas as tabelas
-mysql -u root -p cnpj < data/ddls.sql
+mysql -u root -p cnpj < data/sql/ddls.sql
 ```
 
 **Tabelas criadas:**
@@ -42,22 +42,22 @@ Execute os seguintes comandos na ordem indicada:
 
 ```bash
 # CNAEs (Códigos de atividade econômica)
-mysql -u root -p cnpj < data/insert-cnpj-cnaes.sql
+mysql -u root -p cnpj < data/sql/insert-cnpj-cnaes.sql
 
 # Países
-mysql -u root -p cnpj < data/insert-cnpj-paises.sql
+mysql -u root -p cnpj < data/sql/insert-cnpj-paises.sql
 
 # Municípios brasileiros
-mysql -u root -p cnpj < data/insert-cnpj-municipios.sql
+mysql -u root -p cnpj < data/sql/insert-cnpj-municipios.sql
 
 # Naturezas jurídicas
-mysql -u root -p cnpj < data/insert-cnpj-naturezas-juridicas.sql
+mysql -u root -p cnpj < data/sql/insert-cnpj-naturezas-juridicas.sql
 
 # Qualificações de sócios
-mysql -u root -p cnpj < data/insert-cnpj-qualificacao-socios.sql
+mysql -u root -p cnpj < data/sql/insert-cnpj-qualificacao-socios.sql
 
 # Motivos de situação cadastral
-mysql -u root -p cnpj < data/insert-cnpj-motivos.sql
+mysql -u root -p cnpj < data/sql/insert-cnpj-motivos.sql
 ```
 
 ### 4. Carregar Dados das Empresas (Opcional)
@@ -80,7 +80,20 @@ python scripts/cnpj_simples.py
 
 **Nota:** Os scripts esperam os arquivos CSV no formato original da Receita Federal com os nomes específicos na pasta `data/csv_source/` (ex: `K3241.K03200Y.D50913.EMPRECSV`).
 
-### 5. Verificar a Instalação
+### 5. Configurar Estrutura de Saída
+
+O sistema cria automaticamente a pasta `output/` na raiz do projeto para salvar os arquivos CSV gerados:
+
+```bash
+# Verificar se a pasta output existe
+ls -la output/
+
+# Se não existir, será criada automaticamente no primeiro processamento
+```
+
+> 📁 **Localização dos arquivos**: Os arquivos CSV são sempre salvos na pasta `output/` na raiz do projeto, independentemente de onde o script for executado.
+
+### 6. Verificar a Instalação
 
 ```bash
 # Conectar ao banco e verificar as tabelas
