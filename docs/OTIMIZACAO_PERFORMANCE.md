@@ -116,7 +116,10 @@ WHERE est.situacao_cadastral = 2;
 
 ### 1. **Aplicar Índices de Banco**
 ```bash
-# Executar script de otimização
+# Método recomendado (seguro)
+python scripts/apply_indexes.py
+
+# Método alternativo
 mysql -u root -p cnpj < data/sql/essential_indexes.sql
 ```
 

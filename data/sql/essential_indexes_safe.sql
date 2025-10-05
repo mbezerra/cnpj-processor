@@ -1,57 +1,69 @@
 -- =====================================================
--- ÍNDICES ESSENCIAIS PARA PERFORMANCE
--- Versão simplificada e segura
+-- ÍNDICES ESSENCIAIS PARA PERFORMANCE - VERSÃO SEGURA
+-- Versão que trata erros de índices duplicados
 -- =====================================================
 
 -- IMPORTANTE: Execute este script para melhorar a performance
--- Estes são os índices mínimos necessários para otimização
-
--- NOTA: Se algum índice já existir, você receberá um erro "Duplicate key name"
--- Isso é normal e pode ser ignorado - significa que o índice já foi criado
+-- Esta versão trata automaticamente erros de índices duplicados
 
 -- =====================================================
--- ÍNDICES PRIMÁRIOS (CRÍTICOS)
+-- FUNÇÃO PARA CRIAR ÍNDICE COM TRATAMENTO DE ERRO
+-- =====================================================
+
+DELIMITER $$
+
+CREATE PROCEDURE CreateIndexIfNotExists(
+    IN table_name VARCHAR(128),
+    IN index_name VARCHAR(128),
+    IN column_spec VARCHAR(512)
+)
+BEGIN
+    DECLARE CONTINUE HANDLER FOR 1061
+        BEGIN
+            SELECT CONCAT('Índice ', index_name, ' já existe, ignorando...') AS message;
+        END;
+    
+    SET @sql = CONCAT('CREATE INDEX ', index_name, ' ON ', table_name, ' (', column_spec, ')');
+    PREPARE stmt FROM @sql;
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt;
+END$$
+
+DELIMITER ;
+
+-- =====================================================
+-- CRIAR ÍNDICES USANDO A FUNÇÃO SEGURA
 -- =====================================================
 
 -- 1. Índice principal para ordenação (mais importante)
-CREATE INDEX idx_estabelecimentos_cnpj_data 
-ON cnpj_estabelecimentos (cnpj_part1(8), data_inicio_atividade DESC);
+CALL CreateIndexIfNotExists('cnpj_estabelecimentos', 'idx_estabelecimentos_cnpj_data', 'cnpj_part1(8), data_inicio_atividade DESC');
 
 -- 2. Índice para filtros geográficos mais comuns
-CREATE INDEX idx_estabelecimentos_uf_situacao 
-ON cnpj_estabelecimentos (uf, situacao_cadastral, data_inicio_atividade DESC);
+CALL CreateIndexIfNotExists('cnpj_estabelecimentos', 'idx_estabelecimentos_uf_situacao', 'uf, situacao_cadastral, data_inicio_atividade DESC');
 
 -- 3. Índice para filtros de CNAE
-CREATE INDEX idx_estabelecimentos_cnae_data 
-ON cnpj_estabelecimentos (cnae, data_inicio_atividade DESC);
+CALL CreateIndexIfNotExists('cnpj_estabelecimentos', 'idx_estabelecimentos_cnae_data', 'cnae, data_inicio_atividade DESC');
 
--- =====================================================
--- ÍNDICES PARA TABELAS DE LOOKUP
--- =====================================================
+-- 4. Índice para tabela de empresas
+CALL CreateIndexIfNotExists('cnpj_empresas', 'idx_empresas_cnpj', 'cnpj_part1(8)');
 
--- 4. Índice para tabela de empresas (se não existir)
-CREATE INDEX idx_empresas_cnpj 
-ON cnpj_empresas (cnpj_part1(8));
-
--- 5. Índice para tabela simples (se não existir)
-CREATE INDEX idx_simples_cnpj 
-ON cnpj_simples (cnpj_part1(8));
+-- 5. Índice para tabela simples
+CALL CreateIndexIfNotExists('cnpj_simples', 'idx_simples_cnpj', 'cnpj_part1(8)');
 
 -- 6. Índice para tabela de sócios
-CREATE INDEX idx_socios_cnpj 
-ON cnpj_socios (cnpj_part1(8), codigo_qualificacao_socio);
-
--- =====================================================
--- ÍNDICES PARA FILTROS ESPECÍFICOS
--- =====================================================
+CALL CreateIndexIfNotExists('cnpj_socios', 'idx_socios_cnpj', 'cnpj_part1(8), codigo_qualificacao_socio');
 
 -- 7. Índice para empresas com email
-CREATE INDEX idx_estabelecimentos_email 
-ON cnpj_estabelecimentos (correio_eletronico(50), cnpj_part1(8));
+CALL CreateIndexIfNotExists('cnpj_estabelecimentos', 'idx_estabelecimentos_email', 'correio_eletronico(50), cnpj_part1(8)');
 
 -- 8. Índice para empresas com telefone
-CREATE INDEX idx_estabelecimentos_telefone 
-ON cnpj_estabelecimentos (telefone1, cnpj_part1(8));
+CALL CreateIndexIfNotExists('cnpj_estabelecimentos', 'idx_estabelecimentos_telefone', 'telefone1, cnpj_part1(8)');
+
+-- =====================================================
+-- LIMPAR PROCEDURE TEMPORÁRIA
+-- =====================================================
+
+DROP PROCEDURE IF EXISTS CreateIndexIfNotExists;
 
 -- =====================================================
 -- VERIFICAÇÃO DE ÍNDICES

@@ -18,18 +18,28 @@ Este documento explica como aplicar e gerenciar os índices de banco de dados pa
 
 ## 🛠️ Como Aplicar os Índices
 
-### 1. **Executar Script Essencial**
+### 1. **Método Recomendado: Script Python (Seguro)**
+```bash
+# Aplicar índices de forma segura (recomendado)
+python scripts/apply_indexes.py
+```
+
+### 2. **Método Alternativo: Script SQL Direto**
 ```bash
 # Comando principal
 mysql -u seu_usuario -p sua_database < data/sql/essential_indexes.sql
 
 # Exemplo específico
 mysql -u root -p cnpj < data/sql/essential_indexes.sql
+
+# NOTA: Se receber erro "Duplicate key name", pode ignorar - significa que o índice já existe
 ```
 
-### 2. **Verificar se Funcionou**
-```sql
--- Conectar ao MySQL
+### 3. **Verificar se Funcionou**
+```bash
+# O script Python já faz a verificação automaticamente
+# Mas você também pode verificar manualmente:
+
 mysql -u seu_usuario -p sua_database
 
 -- Verificar índices criados

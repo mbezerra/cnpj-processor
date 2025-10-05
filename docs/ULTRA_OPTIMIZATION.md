@@ -39,7 +39,10 @@ O **Processador CNPJ ULTRA Otimizado** é uma versão completamente reescrita fo
 
 ### 1. Aplicar Índices Essenciais
 ```bash
-# Execute ANTES de usar o processador ULTRA
+# Método recomendado (seguro)
+python scripts/apply_indexes.py
+
+# Método alternativo
 mysql -u seu_usuario -p sua_database < data/sql/essential_indexes.sql
 ```
 
