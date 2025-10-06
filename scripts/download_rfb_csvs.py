@@ -192,7 +192,7 @@ class RFBCSVDownloader:
                     success_count += 1
 
             logger.info("Download concluído: %d/%d arquivos baixados com sucesso",
-                       success_count, len(required_files))
+                        success_count, len(required_files))
             return success_count == len(required_files)
 
         except (requests.RequestException, ValueError) as e:
