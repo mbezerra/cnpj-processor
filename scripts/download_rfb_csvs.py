@@ -10,13 +10,14 @@ Este script:
 5. Salva os arquivos CSV na pasta data/csv_source
 """
 
+import logging
 import re
-import requests
 import zipfile
 from pathlib import Path
 from urllib.parse import urljoin
+
+import requests
 from bs4 import BeautifulSoup
-import logging
 
 # Configuração de logging
 logging.basicConfig(
@@ -27,6 +28,13 @@ logger = logging.getLogger(__name__)
 
 
 class RFBCSVDownloader:
+    """
+    Classe para baixar e processar CSVs da RFB automaticamente.
+
+    Esta classe gerencia o download, descompactação e limpeza dos arquivos
+    CSV da Receita Federal do Brasil.
+    """
+
     def __init__(self, base_url="https://arquivos.receitafederal.gov.br/dados/cnpj/dados_abertos_cnpj/"):
         self.base_url = base_url
         self.download_dir = Path("data/csv_source")
@@ -67,7 +75,7 @@ class RFBCSVDownloader:
             logger.info("Pasta mais recente encontrada: %s", latest_folder)
             return latest_folder
 
-        except Exception as e:
+        except (requests.RequestException, ValueError) as e:
             logger.error("Erro ao obter pasta mais recente: %s", e)
             raise
 
@@ -93,7 +101,7 @@ class RFBCSVDownloader:
                         len(files), folder_name)
             return files
 
-        except Exception as e:
+        except (requests.RequestException, ValueError) as e:
             logger.error("Erro ao obter arquivos da pasta %s: %s",
                          folder_name, e)
             raise
@@ -110,7 +118,8 @@ class RFBCSVDownloader:
                     required_files.append(file)
                     break
 
-        logger.info("Arquivos necessários encontrados: %d", len(required_files))
+        logger.info("Arquivos necessários encontrados: %d",
+                    len(required_files))
         for file in required_files:
             logger.info("  - %s", file)
 
@@ -145,13 +154,13 @@ class RFBCSVDownloader:
                         if total_size > 0:
                             progress = (downloaded / total_size) * 100
                             print(f"\r{filename}: {progress:.1f}%",
-                                   end='', flush=True)
+                                  end='', flush=True)
 
             print()  # Nova linha após o progresso
             logger.info("Download concluído: %s", filename)
             return True
 
-        except Exception as e:
+        except (requests.RequestException, IOError, OSError) as e:
             logger.error("Erro ao baixar %s: %s", filename, e)
             # Remove arquivo parcial se existir
             if local_path.exists():
@@ -183,39 +192,48 @@ class RFBCSVDownloader:
                     success_count += 1
 
             logger.info("Download concluído: %d/%d arquivos baixados com sucesso",
-                        success_count, len(required_files))
+                       success_count, len(required_files))
             return success_count == len(required_files)
 
-        except Exception as e:
+        except (requests.RequestException, ValueError) as e:
             logger.error("Erro durante o download: %s", e)
             return False
 
     def cleanup_old_files(self):
         """
-        Remove arquivos antigos que não correspondem aos padrões atuais.
+        Remove arquivos CSV antigos que não correspondem aos padrões atuais.
         """
         try:
-            current_files = list(self.download_dir.glob("*.zip"))
+            # Busca por arquivos CSV (não mais zip)
+            current_files = list(self.download_dir.glob("*.CSV"))
             removed_count = 0
 
             for file_path in current_files:
                 filename = file_path.name
                 is_required = False
 
-                for pattern in self.required_patterns:
+                # Adapta os padrões para arquivos CSV
+                csv_patterns = [
+                    r'.*EMPRECSV.*\.CSV$',  # Empresas
+                    r'.*ESTABELE.*\.CSV$',  # Estabelecimentos
+                    r'.*SOCIOCSV.*\.CSV$',  # Sócios
+                    r'.*SIMPLES.*\.CSV$'    # Simples
+                ]
+
+                for pattern in csv_patterns:
                     if re.match(pattern, filename, re.IGNORECASE):
                         is_required = True
                         break
 
                 if not is_required:
-                    logger.info("Removendo arquivo antigo: %s", filename)
+                    logger.info("Removendo arquivo CSV antigo: %s", filename)
                     file_path.unlink()
                     removed_count += 1
 
             if removed_count > 0:
-                logger.info("Removidos %d arquivos antigos", removed_count)
+                logger.info("Removidos %d arquivos CSV antigos", removed_count)
 
-        except Exception as e:
+        except (OSError, IOError) as e:
             logger.error("Erro durante limpeza: %s", e)
 
     def extract_zip_files(self):
@@ -232,15 +250,17 @@ class RFBCSVDownloader:
                     with zipfile.ZipFile(zip_path, 'r') as zip_ref:
                         zip_ref.extractall(self.download_dir)
                     extracted_count += 1
-                    logger.info("Arquivo %s descompactado com sucesso", zip_path.name)
-                except Exception as e:
-                    logger.error("Erro ao descompactar %s: %s", zip_path.name, e)
+                    logger.info(
+                        "Arquivo %s descompactado com sucesso", zip_path.name)
+                except (zipfile.BadZipFile, OSError, IOError) as e:
+                    logger.error("Erro ao descompactar %s: %s",
+                                 zip_path.name, e)
 
             logger.info("Descompactação concluída: %d/%d arquivos processados",
                         extracted_count, len(zip_files))
             return extracted_count == len(zip_files)
 
-        except Exception as e:
+        except (OSError, IOError) as e:
             logger.error("Erro durante descompactação: %s", e)
             return False
 
@@ -257,13 +277,14 @@ class RFBCSVDownloader:
                     logger.info("Removendo arquivo zip: %s", zip_path.name)
                     zip_path.unlink()
                     removed_count += 1
-                except Exception as e:
+                except (OSError, IOError) as e:
                     logger.error("Erro ao remover %s: %s", zip_path.name, e)
 
-            logger.info("Remoção concluída: %d arquivos zip removidos", removed_count)
+            logger.info(
+                "Remoção concluída: %d arquivos zip removidos", removed_count)
             return removed_count == len(zip_files)
 
-        except Exception as e:
+        except (OSError, IOError) as e:
             logger.error("Erro durante remoção dos arquivos zip: %s", e)
             return False
 
@@ -287,18 +308,18 @@ def main():
 
     if success:
         print("\n✅ Download concluído com sucesso!")
-        
+
         # Descompacta os arquivos zip
         print("\n📦 Descompactando arquivos...")
         extract_success = downloader.extract_zip_files()
-        
+
         if extract_success:
             print("✅ Descompactação concluída com sucesso!")
-            
+
             # Remove os arquivos zip
             print("\n🗑️  Removendo arquivos zip...")
             cleanup_success = downloader.remove_zip_files()
-            
+
             if cleanup_success:
                 print("✅ Limpeza concluída com sucesso!")
                 dest_path = downloader.download_dir.absolute()
