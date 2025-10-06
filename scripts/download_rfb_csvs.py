@@ -4,7 +4,8 @@ Script para baixar automaticamente os CSVs da RFB.
 
 Este script:
 1. Detecta a pasta com a data mais recente no repositório da RFB
-2. Baixa apenas os arquivos necessários (empresas, estabelecimentos, sócios e simples)
+2. Baixa apenas os arquivos necessários (empresas, estabelecimentos, sócios e
+   simples)
 3. Descompacta automaticamente todos os arquivos zip baixados
 4. Remove os arquivos zip após a descompactação
 5. Salva os arquivos CSV na pasta data/csv_source
@@ -35,7 +36,11 @@ class RFBCSVDownloader:
     CSV da Receita Federal do Brasil.
     """
 
-    def __init__(self, base_url="https://arquivos.receitafederal.gov.br/dados/cnpj/dados_abertos_cnpj/"):
+    def __init__(
+        self,
+        base_url="https://arquivos.receitafederal.gov.br/dados/cnpj/"
+                 "dados_abertos_cnpj/"
+    ):
         self.base_url = base_url
         self.download_dir = Path("data/csv_source")
         self.download_dir.mkdir(parents=True, exist_ok=True)
@@ -191,8 +196,10 @@ class RFBCSVDownloader:
                 if self.download_file(latest_folder, filename):
                     success_count += 1
 
-            logger.info("Download concluído: %d/%d arquivos baixados com sucesso",
-                        success_count, len(required_files))
+            logger.info(
+                "Download concluído: %d/%d arquivos baixados com sucesso",
+                success_count, len(required_files)
+            )
             return success_count == len(required_files)
 
         except (requests.RequestException, ValueError) as e:
@@ -330,7 +337,8 @@ def main():
             print("❌ Erro durante a descompactação.")
             return 1
     else:
-        print("\n❌ Erro durante o download. Verifique os logs para mais detalhes.")
+        print("\n❌ Erro durante o download. "
+              "Verifique os logs para mais detalhes.")
         return 1
 
     return 0
