@@ -111,7 +111,7 @@ for csv in resultados:
         df['data_situacao_especial'].astype(str).apply(lambda x: x.zfill(8)))
     df['codigo_pais'] = df['codigo_pais'].replace('', '0').astype(int)
 
-    insert_in_batches(df, TABLE_NAME, engine, 1, csv, batch_size=50000)
+    insert_in_batches(df, TABLE_NAME, engine, 1, csv, batch_size=100000)
 
     del df
     gc.collect()
@@ -150,7 +150,7 @@ for csv in resultados:
         df['data_situacao_especial'].astype(str).apply(lambda x: x.zfill(8)))
     df['codigo_pais'] = df['codigo_pais'].replace('', '0').astype(int)
 
-    insert_in_batches(df, TABLE_NAME, engine, 2, csv, batch_size=50000)
+    insert_in_batches(df, TABLE_NAME, engine, 2, csv, batch_size=100000)
 
     del df
     gc.collect()
@@ -189,6 +189,6 @@ for csv in resultados:
         df['data_situacao_especial'].astype(str).apply(lambda x: x.zfill(8)))
     df['codigo_pais'] = df['codigo_pais'].replace('', '0').astype(int)
 
-    insert_in_batches(df, TABLE_NAME, engine, 3, csv, batch_size=50000)
+    insert_in_batches(df, TABLE_NAME, engine, 3, csv, batch_size=100000)
 
     print("Finalizado o CSV " + csv)
