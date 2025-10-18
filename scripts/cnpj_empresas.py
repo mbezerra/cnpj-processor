@@ -13,12 +13,17 @@ from dotenv import load_dotenv
 # Carrega variáveis de ambiente
 load_dotenv()
 
+# Determina o diretório raiz do projeto
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(SCRIPT_DIR)
+
 TABLE_NAME = 'cnpj_empresas'
 COLUMN_NAMES = [
     'cnpj_part1', 'razao_social', 'natureza_juridica', 'qualificacao_socio',
     'capital_social', 'porte_empresa', 'x'
 ]
-FILE_SOURCE = 'data/csv_source/K3241.K03200Y.D50913.EMPRECSV'
+FILE_SOURCE = os.path.join(
+    PROJECT_ROOT, 'data/csv_source/K3241.K03200Y.D51011.EMPRECSV')
 TRECHO_BASE = 'K03200Y'
 resultados = []
 # Configuração do banco via variáveis de ambiente

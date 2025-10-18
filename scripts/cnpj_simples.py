@@ -12,13 +12,18 @@ from dotenv import load_dotenv
 # Carrega variáveis de ambiente
 load_dotenv()
 
+# Determina o diretório raiz do projeto
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(SCRIPT_DIR)
+
 TABLE_NAME = 'cnpj_simples'
 COLUMN_NAMES = [
     'cnpj_part1', 'opcao_simples', 'data_opcao_simples',
     'data_exclusao_simples', 'opcao_mei', 'data_opcao_mei',
     'data_exclusao_opcao_mei'
 ]
-FILE_SOURCE = 'data/csv_source/F.K03200$W.SIMPLES.CSV.D50913'
+FILE_SOURCE = os.path.join(
+    PROJECT_ROOT, 'data/csv_source/F.K03200$W.SIMPLES.CSV.D51011')
 
 # Configuração do banco via variáveis de ambiente
 DB_HOST = os.getenv('DB_HOST', 'localhost')

@@ -14,6 +14,10 @@ from dotenv import load_dotenv
 # Carrega variáveis de ambiente
 load_dotenv()
 
+# Determina o diretório raiz do projeto
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(SCRIPT_DIR)
+
 TABLE_NAME = 'cnpj_estabelecimentos'
 COLUMN_NAMES = [
     'cnpj_part1', 'cnpj_part2', 'cnpj_part3', 'identificador_matriz_filial',
@@ -25,7 +29,8 @@ COLUMN_NAMES = [
     'ddd_fax', 'fax', 'correio_eletronico', 'situacao_especial',
     'data_situacao_especial'
 ]
-FILE_SOURCE = 'data/csv_source/K3241.K03200Y.D50913.ESTABELE'
+FILE_SOURCE = os.path.join(
+    PROJECT_ROOT, 'data/csv_source/K3241.K03200Y.D51011.ESTABELE')
 TRECHO_BASE = 'K03200Y'
 resultados = []
 

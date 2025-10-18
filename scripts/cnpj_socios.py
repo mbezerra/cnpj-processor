@@ -13,13 +13,18 @@ from dotenv import load_dotenv
 # Carrega variáveis de ambiente
 load_dotenv()
 
+# Determina o diretório raiz do projeto
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(SCRIPT_DIR)
+
 TABLE_NAME = 'cnpj_socios'
 COLUMN_NAMES = [
     'cnpj_part1', 'identificador_socio', 'nome_socio', 'cpf_cnpj_socio',
     'codigo_qualificacao_socio', 'data_entrada_sociedade',
     'nome_representante_legal', 'cpf_representante_legal', 'x1', 'x2', 'x3'
 ]
-FILE_SOURCE = 'data/csv_source/K3241.K03200Y.D50913.SOCIOCSV'
+FILE_SOURCE = os.path.join(
+    PROJECT_ROOT, 'data/csv_source/K3241.K03200Y.D51011.SOCIOCSV')
 TRECHO_BASE = 'K03200Y'
 resultados = []
 

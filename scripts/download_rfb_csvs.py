@@ -12,6 +12,7 @@ Este script:
 """
 
 import logging
+import os
 import re
 import zipfile
 from pathlib import Path
@@ -26,6 +27,10 @@ logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
+
+# Determina o diretório raiz do projeto
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = Path(os.path.dirname(SCRIPT_DIR))
 
 
 class RFBCSVDownloader:
@@ -42,15 +47,15 @@ class RFBCSVDownloader:
                  "dados_abertos_cnpj/"
     ):
         self.base_url = base_url
-        self.download_dir = Path("data/csv_source")
+        self.download_dir = PROJECT_ROOT / "data" / "csv_source"
         self.download_dir.mkdir(parents=True, exist_ok=True)
 
         # Padrões dos arquivos que queremos baixar
         self.required_patterns = [
-            r'.*EMPRECSV.*\.zip$',  # Empresas
-            r'.*ESTABELE.*\.zip$',  # Estabelecimentos
-            r'.*SOCIOCSV.*\.zip$',  # Sócios
-            r'.*SIMPLES.*\.zip$'    # Simples
+            r'.*Empresas.*\.zip$',  # Empresas
+            r'.*Estabelecimentos.*\.zip$',  # Estabelecimentos
+            r'.*Socios.*\.zip$',  # Sócios
+            r'.*Simples.*\.zip$'    # Simples
         ]
 
     def get_latest_folder(self):
@@ -301,7 +306,7 @@ def main():
     Função principal do script.
     """
     print("=== Downloader de CSVs da RFB ===")
-    dest_path = Path('data/csv_source').absolute()
+    dest_path = PROJECT_ROOT / "data" / "csv_source"
     print(f"Diretório de destino: {dest_path}")
     print()
 

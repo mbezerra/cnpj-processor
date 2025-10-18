@@ -70,14 +70,14 @@ class CNPJFilters:
     def get_situacao_cadastral(self) -> Optional[str]:
         """Solicita situação cadastral do usuário"""
         print("\n📊 FILTRO: Situação Cadastral")
-        print("1 - Ativos (situação = 2)")
+        print("1 - Ativos (situação = 2) [PADRÃO]")
         print("2 - Inaptos (situação = 4)")
         print("3 - Inativos (situações = 1, 3, 8)")
-        print("Ou pressione Enter para pular este filtro")
+        print("Ou pressione Enter para usar o padrão (Ativos)")
         
         opcao = input("Situação cadastral: ").strip()
         
-        if opcao == '1':
+        if opcao == '1' or opcao == '':
             print("✅ Filtro aplicado: Apenas empresas ATIVAS")
             return 'ativos'
         elif opcao == '2':
@@ -86,7 +86,7 @@ class CNPJFilters:
         elif opcao == '3':
             print("✅ Filtro aplicado: Apenas empresas INATIVAS")
             return 'inativos'
-        elif opcao:
+        else:
             print("❌ Opção inválida. Use 1, 2 ou 3")
             return self.get_situacao_cadastral()
         
