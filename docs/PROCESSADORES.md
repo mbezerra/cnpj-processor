@@ -91,6 +91,10 @@ python scripts/main_optimized.py --count-only
 - 📊 Cache agressivo para todas as tabelas
 - 🎯 Consultas SQL mínimas com JOINs essenciais
 - 🚀 Otimizações de sessão MySQL
+- 🔧 **Correção automática do país** (COLIS POSTAUX → BRASIL)
+- 📋 **Reordenação das colunas** (códigos seguidos de descrições)
+- 👥 **Busca de sócios sempre incluída** (dados essenciais)
+- 📈 **Paginação baseada em cursor** para performance consistente
 
 #### **Quando Usar:**
 - Volumes grandes (100.000+ registros)
@@ -108,6 +112,9 @@ python scripts/main_ultra_optimized.py --limit 200000
 
 # Com filtros e batch size customizado
 python scripts/main_ultra_optimized.py --limit 150000 --batch-size 25000
+
+# Processamento com correção automática do país e reordenação das colunas
+python scripts/main_ultra_optimized.py --limit 50000 --output output/cnpj_corrigido.csv
 ```
 
 ---

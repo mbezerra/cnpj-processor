@@ -46,6 +46,28 @@ Este guia ajuda a resolver problemas comuns encontrados ao usar o CNPJ Processor
    mysql -u root -p -e "SHOW DATABASES;"
    ```
 
+### ❌ País aparece como "COLIS POSTAUX" em vez de "BRASIL"
+
+**Problema**: Empresas brasileiras aparecem com país incorreto
+
+**✅ Solução**: 
+- **RESOLVIDO** na versão atual
+- O sistema agora corrige automaticamente o código do país 0 para 105 (BRASIL)
+- A correção é aplicada antes do mapeamento para garantir consistência
+- Execute: `python scripts/main_ultra_optimized.py --limit 100` para verificar
+
+### ❌ Colunas desorganizadas no CSV
+
+**Problema**: Colunas de códigos e descrições espalhadas pelo arquivo
+
+**✅ Solução**: 
+- **RESOLVIDO** na versão atual
+- O sistema agora reordena automaticamente as colunas:
+  - `codigo_pais` → `pais`
+  - `codigo_municipio` → `municipio`
+  - `cnae_codes` → `cnae_fiscal`
+- Execute: `python scripts/main_ultra_optimized.py --limit 100` para verificar
+
 ### ❌ Banco de dados não existe
 
 **Problema**: `Unknown database 'cnpj'`
@@ -159,6 +181,38 @@ pip3 install -r requirements.txt
 1. Reduzir limite de registros
 2. Fechar outros aplicativos
 3. Usar processamento em lotes menores
+
+## ⚡ Problemas de Performance
+
+### ❌ Processo para prematuramente
+
+**Problema**: Script para no lote 4 ou 5 sem completar
+
+**✅ Solução**: 
+- **RESOLVIDO** na versão atual
+- O sistema agora usa paginação baseada em cursor em vez de OFFSET
+- Ajuste dinâmico do tamanho do lote baseado na performance
+- Execute: `python scripts/main_ultra_optimized.py --limit 200000` para verificar
+
+### ❌ Performance degrada ao longo do tempo
+
+**Problema**: Cada lote demora mais que o anterior
+
+**✅ Solução**: 
+- **RESOLVIDO** na versão atual
+- Paginação baseada em cursor elimina degradação de performance
+- Cache otimizado para lookup tables
+- Execute: `python scripts/main_ultra_optimized.py --limit 100000` para verificar
+
+### ❌ Sócios não aparecem nos resultados
+
+**Problema**: Dados de sócios ausentes ou incompletos
+
+**✅ Solução**: 
+- **RESOLVIDO** na versão atual
+- Busca de sócios sempre incluída (nunca omitida)
+- Busca direta sem cache para evitar problemas de memória
+- Execute: `python scripts/main_ultra_optimized.py --limit 100` para verificar
 
 ## 📝 Logs e Debug
 

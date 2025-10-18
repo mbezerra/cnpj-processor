@@ -60,7 +60,7 @@ cnpj-processor/
 
 ## 🚀 CNPJ Processor
 
-**Sistema profissional de processamento de dados CNPJ** com detecção inteligente de celulares, validação de emails e filtros avançados.
+**Sistema profissional de processamento de dados CNPJ** com detecção inteligente de celulares, validação de emails, filtros avançados e **processamento ULTRA otimizado** para máxima performance.
 
 ## Instalação
 
@@ -138,8 +138,8 @@ python scripts/main.py
 # Processamento com limite específico
 python scripts/main.py --limit 100 --output output/meu_arquivo.csv
 
-# Processamento máximo (200.000 registros mais recentes)
-python scripts/main.py --limit 200000 --output output/cnpj_recentes.csv
+# Processamento máximo (200.000 registros mais recentes) - ULTRA otimizado
+python scripts/main_ultra_optimized.py --limit 200000 --output output/cnpj_recentes.csv
 
 # Testar conexão
 python scripts/main.py --test-connection
@@ -220,9 +220,11 @@ processor.run(limit=0, output_path="output/cnpj_completo.csv")
 
 ### 🔧 Correções de Dados
 - **Código do país**: Substitui 0 por 105 (Brasil) automaticamente
+- **Nome do país**: Corrige "COLIS POSTAUX" para "BRASIL" quando código era 0
 - **Concatenação de contatos**: DDD + telefone/fax em campos únicos
 - **Validação de email**: Detecção automática de emails válidos
 - **Detecção de celular**: Algoritmo baseado no terceiro dígito
+- **Ordem das colunas**: Códigos seguidos de suas respectivas descrições
 
 ## Configurações
 
@@ -244,6 +246,11 @@ O CSV gerado contém as seguintes colunas principais:
 - **Dados do Estabelecimento**: Endereço, telefones, CNAE, situação cadastral
 - **Dados dos Sócios**: Nome, qualificação, data de entrada (agregados)
 - **Regime Tributário**: Simples Nacional, MEI, datas de opção/exclusão
+
+### 📋 Ordem das Colunas (Otimizada)
+- **`codigo_pais`** → **`pais`** (código seguido da descrição)
+- **`codigo_municipio`** → **`municipio`** (código seguido da descrição)
+- **`cnae_codes`** → **`cnae_fiscal`** (código seguido da descrição)
 
 ### 📱 Colunas de Telefone
 - **ddd_telefone_1**: DDD + telefone concatenados
@@ -474,6 +481,8 @@ LEFT JOIN cnpj_paises p ON (CASE WHEN est.codigo_pais = 0 THEN 105 ELSE est.codi
 - **Nome do País**: "COLIS POSTAUX" → "BRASIL" (quando código era 0)
 - **Dados consistentes**: Garante que todos os registros tenham país válido
 - **JOIN otimizado**: Consulta SQL corrigida para fazer JOIN correto com países
+- **Ordem das colunas**: Códigos seguidos de suas respectivas descrições
+- **Processamento otimizado**: Correção aplicada antes do mapeamento para garantir consistência
 
 ## Filtros Disponíveis
 
@@ -558,14 +567,14 @@ python scripts/benchmark_performance.py
 
 ### 🚀 Produção
 ```bash
-# Processamento máximo (200.000 registros mais recentes)
-python scripts/main.py --limit 200000 --output output/cnpj_recentes.csv
+# Processamento máximo (200.000 registros mais recentes) - ULTRA otimizado
+python scripts/main_ultra_optimized.py --limit 200000 --output output/cnpj_recentes.csv
 
 # Processamento com filtros interativos
-python scripts/main.py --filters --limit 200000 --output output/cnpj_filtrado.csv
+python scripts/main_ultra_optimized.py --filters --limit 200000 --output output/cnpj_filtrado.csv
 
 # Processamento por lotes
-python scripts/main.py --limit 10000 --output output/lote_1.csv
+python scripts/main_ultra_optimized.py --limit 10000 --output output/lote_1.csv
 ```
 
 ### 🔍 Filtros Específicos
@@ -658,3 +667,8 @@ python scripts/main.py --limit 5
 - ✅ Scripts de benchmark de performance
 - ✅ Limite global de 200.000 registros implementado
 - ✅ Ordenação por data de início (mais recentes primeiro)
+- ✅ **Correção do nome do país** (COLIS POSTAUX → BRASIL)
+- ✅ **Reordenação das colunas** (códigos seguidos de descrições)
+- ✅ **Processamento ULTRA otimizado** com performance consistente
+- ✅ **Busca de sócios sempre incluída** (dados essenciais)
+- ✅ **Paginação baseada em cursor** para performance consistente

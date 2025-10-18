@@ -2,6 +2,39 @@
 
 Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 
+## [2.0.0] - 2025-10-18
+
+### 🚀 Versão Ultra Otimizada v2.0
+
+#### ✨ Adicionado
+- **Correção automática do país** (COLIS POSTAUX → BRASIL)
+- **Reordenação das colunas** (códigos seguidos de descrições)
+- **Paginação baseada em cursor** para performance consistente
+- **Busca de sócios sempre incluída** (dados essenciais)
+- **Ajuste dinâmico do tamanho do lote** baseado na performance
+- **Documentação de melhorias recentes** (`docs/MELHORIAS_RECENTES.md`)
+
+#### 🔧 Melhorias
+- **Performance consistente** sem degradação ao longo do tempo
+- **Processamento nunca para** prematuramente
+- **Dados de sócios sempre incluídos** nos resultados
+- **Ordem lógica das colunas** no CSV de saída
+- **Correção do mapeamento do país** aplicada na ordem correta
+
+#### 🐛 Corrigido
+- **País 105** agora aparece corretamente como "BRASIL"
+- **Colunas desorganizadas** agora seguem ordem lógica
+- **Processo parando prematuramente** resolvido com paginação por cursor
+- **Performance degradando** resolvida com otimizações
+- **Sócios omitidos** resolvido com busca sempre incluída
+
+#### 📊 Impacto
+- ✅ **Dados consistentes** - país correto para todas as empresas brasileiras
+- ✅ **CSV organizado** - colunas em ordem lógica
+- ✅ **Performance estável** - sem degradação ao longo do tempo
+- ✅ **Processamento completo** - nunca para prematuramente
+- ✅ **Dados completos** - todos os sócios sempre incluídos
+
 ## [1.0.0] - 2025-10-04
 
 ### 🎉 Lançamento Inicial
